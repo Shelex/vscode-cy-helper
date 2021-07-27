@@ -10,66 +10,66 @@ const vscode = new VS();
  * @param {object} opts
  */
 const readFilesFromDir = (
-  folder,
-  opts = { extension: '.[j|t]s', name: undefined }
+    folder,
+    opts = { extension: '.[j|t]s', name: undefined }
 ) => {
-  try {
-    const pattern = `${path.normalize(folder).replace(/\\/g, '/')}/**/${
-      opts.name || '*'
-    }${opts.extension || ''}`;
-    const files = glob.sync(pattern, {
-      onlyFiles: true,
-      absolute: true,
-      suppressErrors: true,
-      ignore: '**/node_modules/**'
-    });
-    return files.filter(f => f.includes('.'));
-  } catch (er) {
-    vscode.show('error', er.message);
-    return [];
-  }
+    try {
+        const pattern = `${path.normalize(folder).replace(/\\/g, '/')}/**/${
+            opts.name || '*'
+        }${opts.extension || ''}`;
+        const files = glob.sync(pattern, {
+            onlyFiles: true,
+            absolute: true,
+            suppressErrors: true,
+            ignore: '**/node_modules/**'
+        });
+        return files.filter((f) => f.includes('.'));
+    } catch (er) {
+        vscode.show('error', er.message);
+        return [];
+    }
 };
 
 /**
  * Check if given path existing
  * @param {string} filepath
  */
-const fileExist = filepath => fs.pathExistsSync(filepath);
+const fileExist = (filepath) => fs.pathExistsSync(filepath);
 
 /**
  * Read file content
  * @param {string} filepath
  */
-const readFile = filepath =>
-  (fs.pathExistsSync(path.resolve(filepath)) &&
-    fs.readFileSync(path.resolve(filepath), 'utf-8')) ||
-  null;
+const readFile = (filepath) =>
+    (fs.pathExistsSync(path.resolve(filepath)) &&
+        fs.readFileSync(path.resolve(filepath), 'utf-8')) ||
+    null;
 
 /**
  * Prompts user to reload editor window in order for configuration change to take effect.
  */
 function promptToReloadWindow(event) {
-  const shouldReload = event.affectsConfiguration('cypressHelper');
-  if (shouldReload) {
-    const action = 'Reload';
-    vscode
-      .show(
-        'info',
-        `Please reload window in order for changes in extension "Cypress Helper" configuration to take effect.`,
-        false,
-        action
-      )
-      .then(selectedAction => {
-        if (selectedAction === action) {
-          vscode.execute('workbench.action.reloadWindow');
-        }
-      });
-  }
+    const shouldReload = event.affectsConfiguration('cypressHelper');
+    if (shouldReload) {
+        const action = 'Reload';
+        vscode
+            .show(
+                'info',
+                `Please reload window in order for changes in extension "Cypress Helper" configuration to take effect.`,
+                false,
+                action
+            )
+            .then((selectedAction) => {
+                if (selectedAction === action) {
+                    vscode.execute('workbench.action.reloadWindow');
+                }
+            });
+    }
 }
 
 module.exports = {
-  readFilesFromDir,
-  readFile,
-  fileExist,
-  promptToReloadWindow
+    readFilesFromDir,
+    readFile,
+    fileExist,
+    promptToReloadWindow
 };

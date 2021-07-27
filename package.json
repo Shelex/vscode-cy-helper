@@ -1,312 +1,309 @@
 {
-	"name": "vscode-cy-helper",
-	"version": "1.2.5",
-	"displayName": "Cypress Helper",
-	"description": "Extension for cypress.io testing tool",
-	"main": "./src/extension",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/90poe/vscode-cy-helper.git"
-	},
-	"author": {
-		"name": "Oleksandr Shevtsov",
-		"email": "ovr.shevtsov@gmail.com"
-	},
-	"private": true,
-	"icon": "assets/icon.png",
-	"engines": {
-		"vscode": "^1.54.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"activationEvents": [
-		"onCommand:cypressHelper.openCustomCommand",
-		"onCommand:cypressHelper.generateCustomCommandTypes",
-		"onCommand:cypressHelper.findUnusedCustomCommands",
-		"onCommand:cypressHelper.findUnusedCucumberSteps",
-		"onCommand:cypressHelper.findCucumberStepUsage",
-		"onCommand:cypressHelper.findCustomCommandReferences",
-		"onCommand:cypressHelper.createDefaultTsConfig",
-		"onCommand:cypressHelper.parseHar",
-		"onCommand:cypressHelper.generateJsonSchema",
-		"onLanguage:javascript",
-		"onLanguage:typescript",
-		"onLanguage:feature"
-	],
-	"publisher": "Shelex",
-	"contributes": {
-		"keybindings": [
-			{
-				"command": "cypressHelper.openCustomCommand",
-				"key": "alt+f12",
-				"mac": "alt+f12"
-			}
-		],
-		"commands": [
-			{
-				"command": "cypressHelper.openSpecFile",
-				"title": "Cypress: Open Spec File"
-			},
-			{
-				"command": "cypressHelper.openSingleTest",
-				"title": "Cypress: Open Single Test"
-			},
-			{
-				"command": "cypressHelper.openCustomCommand",
-				"title": "Cypress: Go to Custom Command Definition"
-			},
-			{
-				"command": "cypressHelper.generateCustomCommandTypes",
-				"title": "Cypress: Generate Custom Command Types"
-			},
-			{
-				"command": "cypressHelper.findUnusedCustomCommands",
-				"title": "Cypress: Find Unused Custom Commands"
-			},
-			{
-				"command": "cypressHelper.findUnusedCucumberSteps",
-				"title": "Cypress: Find Unused Cucumber Step Definitions"
-			},
-			{
-				"command": "cypressHelper.findCucumberStepUsage",
-				"title": "Cypress: Step Defintion All References"
-			},
-			{
-				"command": "cypressHelper.findCustomCommandReferences",
-				"title": "Cypress: Commands All References"
-			},
-			{
-				"command": "cypressHelper.createDefaultTsConfig",
-				"title": "Cypress: Create default tsconfig.json file"
-			},
-			{
-				"command": "cypressHelper.parseHar",
-				"title": "Cypress: Convert HAR into fixtures"
-			},
-			{
-				"command": "cypressHelper.generateJsonSchema",
-				"title": "Cypress: Generate JSON Schema"
-			}
-		],
-		"menus": {
-			"explorer/context": [
-				{
-					"command": "cypressHelper.parseHar",
-					"when": "resourceExtname == .har && config.cypressHelper.menuItems.ParseHAR",
-					"group": "7_modification"
-				},
-				{
-					"command": "cypressHelper.generateJsonSchema",
-					"when": "resourceExtname == .json && config.cypressHelper.menuItems.SchemaGenerator",
-					"group": "7_modification"
-				}
-			],
-			"editor/context": [
-				{
-					"when": "resourceLangId =~ /(typescript|javascript)/ && config.cypressHelper.menuItems.GoToCustomCommand",
-					"command": "cypressHelper.openCustomCommand",
-					"group": "navigation"
-				},
-				{
-					"when": "resourceLangId =~ /(javascript|typescript)/ && config.cypressHelper.menuItems.FindStepDefinitionReferences",
-					"command": "cypressHelper.findCucumberStepUsage",
-					"group": "navigation@2"
-				},
-				{
-					"when": "resourceLangId =~ /(javascript|typescript)/  && config.cypressHelper.menuItems.FindCustomCommandReferences",
-					"command": "cypressHelper.findCustomCommandReferences",
-					"group": "navigation@2"
-				},
-				{
-					"when": "config.cypressHelper.menuItems.GenerateCustomCommandTypes",
-					"command": "cypressHelper.generateCustomCommandTypes",
-					"group": "z_commands"
-				}
-			]
-		},
-		"configuration": {
-			"title": "cypressHelper",
-			"properties": {
-				"cypressHelper.commandForOpen": {
-					"type": "string",
-					"default": "npx cypress open",
-					"description": "Specify command used for opening cypress GUI"
-				},
-				"cypressHelper.commandForRun": {
-					"type": "string",
-					"default": "npx cypress run",
-					"description": "Specify command used for running cypress"
-				},
-				"cypressHelper.customCommandsFolder": {
-					"type": "string",
-					"default": "cypress/support",
-					"description": "Specify path to folder with custom commands"
-				},
-				"cypressHelper.jqueryLocators": {
-					"type": "object",
-					"default": {
-						"enabled": true,
-						"commandsForAutocompletion": [
-							"get",
-							"find",
-							"filter"
-						],
-						"includePatterns": [],
-						"excludePatterns": [],
-						"customAttributes": []
-					},
-					"description": "configure jquery locators autocomplete"
-				},
-				"cypressHelper.typeDefinitionFile": {
-					"type": "string",
-					"default": "cypress/support/customCommands.d.ts",
-					"description": "Specify file to save generated custom commands types"
-				},
-				"cypressHelper.typeDefinitionExcludePatterns": {
-					"type": "array",
-					"default": [],
-					"description": "Specify glob patterns to exclude some custom commands search",
-					"items": {
-						"type": "string"
-					}
-				},
-				"cypressHelper.includeAnnotationForCommands": {
-					"type": "boolean",
-					"default": false,
-					"description": "Include comments before custom command to type definition file"
-				},
-				"cypressHelper.typeDefinitionOnSave": {
-					"type": "boolean",
-					"default": false,
-					"description": "Generate type definitions for custom commands on save"
-				},
-				"cypressHelper.menuItems": {
-					"type": "object",
-					"default": {
-						"OpenCypress": true,
-						"RunCypress": false,
-						"GenerateCustomCommandTypes": true,
-						"GoToCustomCommand": true,
-						"FindCustomCommandReferences": true,
-						"FindStepDefinitionReferences": true,
-						"SchemaGenerator": false,
-						"ParseHAR": false,
-						"mockAutocomplete": false
-					},
-					"description": "display menu items for commands",
-					"items": {
-						"type": "object",
-						"properties": {
-							"OpenCypress": {
-								"type": "boolean",
-								"default": true
-							},
-							"RunCypress": {
-								"type": "boolean",
-								"default": false
-							},
-							"GenerateCustomCommandTypes": {
-								"type": "boolean",
-								"default": true
-							},
-							"GoToCustomCommand": {
-								"type": "boolean",
-								"default": true
-							},
-							"FindCustomCommandReferences": {
-								"type": "boolean",
-								"default": true
-							},
-							"FindStepDefinitionReferences": {
-								"type": "boolean",
-								"default": true
-							}
-						}
-					}
-				},
-				"cypressHelper.fixtureAutocompletionCommands": {
-					"type": "array",
-					"default": [
-						"fixture"
-					],
-					"description": "Commands that should have fixture path autocompletion",
-					"items": {
-						"type": "string"
-					}
-				},
-				"cypressHelper.enableCommandReferenceProvider": {
-					"type": "boolean",
-					"default": true,
-					"description": "In case you have type definitions, native Find all References will return duplicates for commands. To avoid it set this parameter to `false`"
-				},
-				"cypressHelper.cucumberFixtureAutocompleteOnQuotes": {
-					"type": "boolean",
-					"default": false,
-					"description": "Enable fixture autocompletion on quotes (\") in feature files"
-				},
-				"cypressHelper.cucumberTagsAutocomplete": {
-					"type": "object",
-					"default": {
-						"enable": false,
-						"allurePlugin": false,
-						"tags": [
-							"focus"
-						]
-					},
-					"description": "configure cucumber tags autocomplete in feature files",
-					"properties": {
-						"enable": {
-							"type": "boolean",
-							"default": false,
-							"description": "enable cucumber tags autocomplete"
-						},
-						"allurePlugin": {
-							"type": "boolean",
-							"default": false,
-							"description": "enable autocompletion for allure-plugin tags"
-						},
-						"tags": {
-							"type": "array",
-							"default": [
-								"focus"
-							],
-							"description": "list of tags available for autocomplete",
-							"items": {
-								"type": "string"
-							}
-						}
-					}
-				},
-				"cypressHelper.reuseTerminalInstance": {
-					"type": "boolean",
-					"default": true,
-					"description": "Use same terminal instance for opening/running cypress. Set to `false` if you need to restart cypress."
-				}
-			}
-		}
-	},
-	"devDependencies": {
-		"@types/fs-extra": "9.0.1",
-		"@types/glob": "7.1.3",
-		"@types/lodash": "4.14.161",
-		"@types/mocha": "7.0.2",
-		"@types/node": "12.19.0",
-		"@types/vscode": "1.54.0",
-		"eslint": "6.8.0",
-		"eslint-config-prettier": "6.10.1",
-		"eslint-plugin-prettier": "3.1.2",
-		"mocha": "7.1.1",
-		"prettier": "2.0.1",
-		"vscode-test": "1.3.0"
-	},
-	"dependencies": {
-		"@babel/parser": "7.11.4",
-		"@babel/traverse": "7.11.0",
-		"fast-glob": "3.2.5",
-		"fs-extra": "9.0.1",
-		"gherkin": "5.1.0",
-		"lodash": "4.17.20",
-		"minimatch": "3.0.4"
-	}
+    "name": "vscode-cy-helper",
+    "version": "1.2.7",
+    "displayName": "Cypress Helper",
+    "description": "Extension for cypress.io testing tool",
+    "main": "./src/extension",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Shelex/vscode-cy-helper.git"
+    },
+    "author": {
+        "name": "Oleksandr Shevtsov",
+        "email": "ovr.shevtsov@gmail.com"
+    },
+    "private": true,
+    "icon": "assets/icon.png",
+    "engines": {
+        "vscode": "^1.58.1"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onCommand:cypressHelper.openCustomCommand",
+        "onCommand:cypressHelper.generateCustomCommandTypes",
+        "onCommand:cypressHelper.findUnusedCustomCommands",
+        "onCommand:cypressHelper.findUnusedCucumberSteps",
+        "onCommand:cypressHelper.findCucumberStepUsage",
+        "onCommand:cypressHelper.findCustomCommandReferences",
+        "onCommand:cypressHelper.createDefaultTsConfig",
+        "onCommand:cypressHelper.parseHar",
+        "onCommand:cypressHelper.generateJsonSchema",
+        "onLanguage:javascript",
+        "onLanguage:typescript",
+        "onLanguage:feature"
+    ],
+    "publisher": "shevtsov",
+    "contributes": {
+        "keybindings": [
+            {
+                "command": "cypressHelper.openCustomCommand",
+                "key": "alt+f12",
+                "mac": "alt+f12"
+            }
+        ],
+        "commands": [
+            {
+                "command": "cypressHelper.openSpecFile",
+                "title": "Cypress: Open Spec File"
+            },
+            {
+                "command": "cypressHelper.openSingleTest",
+                "title": "Cypress: Open Single Test"
+            },
+            {
+                "command": "cypressHelper.openCustomCommand",
+                "title": "Cypress: Go to Custom Command Definition"
+            },
+            {
+                "command": "cypressHelper.generateCustomCommandTypes",
+                "title": "Cypress: Generate Custom Command Types"
+            },
+            {
+                "command": "cypressHelper.findUnusedCustomCommands",
+                "title": "Cypress: Find Unused Custom Commands"
+            },
+            {
+                "command": "cypressHelper.findUnusedCucumberSteps",
+                "title": "Cypress: Find Unused Cucumber Step Definitions"
+            },
+            {
+                "command": "cypressHelper.findCucumberStepUsage",
+                "title": "Cypress: Step Defintion All References"
+            },
+            {
+                "command": "cypressHelper.findCustomCommandReferences",
+                "title": "Cypress: Commands All References"
+            },
+            {
+                "command": "cypressHelper.createDefaultTsConfig",
+                "title": "Cypress: Create default tsconfig.json file"
+            },
+            {
+                "command": "cypressHelper.parseHar",
+                "title": "Cypress: Convert HAR into fixtures"
+            },
+            {
+                "command": "cypressHelper.generateJsonSchema",
+                "title": "Cypress: Generate JSON Schema"
+            }
+        ],
+        "menus": {
+            "explorer/context": [
+                {
+                    "command": "cypressHelper.parseHar",
+                    "when": "resourceExtname == .har && config.cypressHelper.menuItems.ParseHAR",
+                    "group": "7_modification"
+                },
+                {
+                    "command": "cypressHelper.generateJsonSchema",
+                    "when": "resourceExtname == .json && config.cypressHelper.menuItems.SchemaGenerator",
+                    "group": "7_modification"
+                }
+            ],
+            "editor/context": [
+                {
+                    "when": "resourceLangId =~ /(typescript|javascript)/ && config.cypressHelper.menuItems.GoToCustomCommand",
+                    "command": "cypressHelper.openCustomCommand",
+                    "group": "navigation"
+                },
+                {
+                    "when": "resourceLangId =~ /(javascript|typescript)/ && config.cypressHelper.menuItems.FindStepDefinitionReferences",
+                    "command": "cypressHelper.findCucumberStepUsage",
+                    "group": "navigation@2"
+                },
+                {
+                    "when": "resourceLangId =~ /(javascript|typescript)/  && config.cypressHelper.menuItems.FindCustomCommandReferences",
+                    "command": "cypressHelper.findCustomCommandReferences",
+                    "group": "navigation@2"
+                },
+                {
+                    "when": "config.cypressHelper.menuItems.GenerateCustomCommandTypes",
+                    "command": "cypressHelper.generateCustomCommandTypes",
+                    "group": "z_commands"
+                }
+            ]
+        },
+        "configuration": {
+            "title": "cypressHelper",
+            "properties": {
+                "cypressHelper.commandForOpen": {
+                    "type": "string",
+                    "default": "npx cypress open",
+                    "description": "Specify command used for opening cypress GUI"
+                },
+                "cypressHelper.commandForRun": {
+                    "type": "string",
+                    "default": "npx cypress run",
+                    "description": "Specify command used for running cypress"
+                },
+                "cypressHelper.customCommandsFolder": {
+                    "type": "string",
+                    "default": "cypress/support",
+                    "description": "Specify path to folder with custom commands"
+                },
+                "cypressHelper.jqueryLocators": {
+                    "type": "object",
+                    "default": {
+                        "enabled": true,
+                        "commandsForAutocompletion": [
+                            "get",
+                            "find",
+                            "filter"
+                        ],
+                        "includePatterns": [],
+                        "excludePatterns": [],
+                        "customAttributes": []
+                    },
+                    "description": "configure jquery locators autocomplete"
+                },
+                "cypressHelper.typeDefinitionFile": {
+                    "type": "string",
+                    "default": "cypress/support/customCommands.d.ts",
+                    "description": "Specify file to save generated custom commands types"
+                },
+                "cypressHelper.typeDefinitionExcludePatterns": {
+                    "type": "array",
+                    "default": [],
+                    "description": "Specify glob patterns to exclude some custom commands search",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "cypressHelper.includeAnnotationForCommands": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Include comments before custom command to type definition file"
+                },
+                "cypressHelper.typeDefinitionOnSave": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Generate type definitions for custom commands on save"
+                },
+                "cypressHelper.menuItems": {
+                    "type": "object",
+                    "default": {
+                        "OpenCypress": true,
+                        "RunCypress": false,
+                        "GenerateCustomCommandTypes": true,
+                        "GoToCustomCommand": true,
+                        "FindCustomCommandReferences": true,
+                        "FindStepDefinitionReferences": true,
+                        "SchemaGenerator": false,
+                        "ParseHAR": false,
+                        "mockAutocomplete": false
+                    },
+                    "description": "display menu items for commands",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "OpenCypress": {
+                                "type": "boolean",
+                                "default": true
+                            },
+                            "RunCypress": {
+                                "type": "boolean",
+                                "default": false
+                            },
+                            "GenerateCustomCommandTypes": {
+                                "type": "boolean",
+                                "default": true
+                            },
+                            "GoToCustomCommand": {
+                                "type": "boolean",
+                                "default": true
+                            },
+                            "FindCustomCommandReferences": {
+                                "type": "boolean",
+                                "default": true
+                            },
+                            "FindStepDefinitionReferences": {
+                                "type": "boolean",
+                                "default": true
+                            }
+                        }
+                    }
+                },
+                "cypressHelper.fixtureAutocompletionCommands": {
+                    "type": "array",
+                    "default": [
+                        "fixture"
+                    ],
+                    "description": "Commands that should have fixture path autocompletion",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "cypressHelper.enableCommandReferenceProvider": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "In case you have type definitions, native Find all References will return duplicates for commands. To avoid it set this parameter to `false`"
+                },
+                "cypressHelper.cucumberFixtureAutocompleteOnQuotes": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enable fixture autocompletion on quotes (\") in feature files"
+                },
+                "cypressHelper.cucumberTagsAutocomplete": {
+                    "type": "object",
+                    "default": {
+                        "enable": false,
+                        "allurePlugin": false,
+                        "tags": [
+                            "focus"
+                        ]
+                    },
+                    "description": "configure cucumber tags autocomplete in feature files",
+                    "properties": {
+                        "enable": {
+                            "type": "boolean",
+                            "default": false,
+                            "description": "enable cucumber tags autocomplete"
+                        },
+                        "allurePlugin": {
+                            "type": "boolean",
+                            "default": false,
+                            "description": "enable autocompletion for allure-plugin tags"
+                        },
+                        "tags": {
+                            "type": "array",
+                            "default": [
+                                "focus"
+                            ],
+                            "description": "list of tags available for autocomplete",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "cypressHelper.reuseTerminalInstance": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Use same terminal instance for opening/running cypress. Set to `false` if you need to restart cypress."
+                }
+            }
+        }
+    },
+    "devDependencies": {
+        "@types/fs-extra": "9.0.12",
+        "@types/glob": "7.1.4",
+        "@types/lodash": "4.14.171",
+        "@types/node": "15.0.2",
+        "@types/vscode": "1.58.1",
+        "eslint": "7.31.0",
+        "eslint-config-prettier": "8.3.0",
+        "eslint-plugin-prettier": "3.4.0",
+        "prettier": "2.3.2"
+    },
+    "dependencies": {
+        "@babel/parser": "7.14.8",
+        "@babel/traverse": "7.14.8",
+        "fast-glob": "3.2.7",
+        "fs-extra": "10.0.0",
+        "gherkin": "5.1.0",
+        "lodash": "4.17.21",
+        "minimatch": "3.0.4"
+    }
 }

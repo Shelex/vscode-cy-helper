@@ -14,7 +14,9 @@ const root = vscode.root();
  * @param {number} target
  */
 const findOverlap = (indexedMatches, target) => {
-  return indexedMatches.find(str => target >= str.start && target <= str.end);
+    return indexedMatches.find(
+        (str) => target >= str.start && target <= str.end
+    );
 };
 
 /**
@@ -25,12 +27,12 @@ const findOverlap = (indexedMatches, target) => {
  * @param {number} target
  */
 const findClosestRange = (indexedMatches, target) => {
-  return indexedMatches.reduce((prev, curr) =>
-    Math.abs(curr.start - target) < Math.abs(prev.start - target) &&
-    Math.abs(curr.end - target) < Math.abs(prev.end - target)
-      ? curr
-      : prev
-  );
+    return indexedMatches.reduce((prev, curr) =>
+        Math.abs(curr.start - target) < Math.abs(prev.start - target) &&
+        Math.abs(curr.end - target) < Math.abs(prev.end - target)
+            ? curr
+            : prev
+    );
 };
 
 /**
@@ -39,65 +41,72 @@ const findClosestRange = (indexedMatches, target) => {
  * or usage: `.command()`
  */
 const detectCustomCommand = () => {
-  const editor = vscode.activeTextEditor();
+    const editor = vscode.activeTextEditor();
 
-  if (editor.selection.start.character === editor.selection.end.character) {
-    const { text: line } = editor.document.lineAt(editor.selection.active.line);
-    const declarationExpression =
-      line.includes(CYPRESS_COMMAND_ADD) ||
-      line.endsWith("',") ||
-      line.endsWith('",');
-    const implementationExpression = line.includes('.') && line.includes('(');
+    if (editor.selection.start.character === editor.selection.end.character) {
+        const { text: line } = editor.document.lineAt(
+            editor.selection.active.line
+        );
+        const declarationExpression =
+            line.includes(CYPRESS_COMMAND_ADD) ||
+            line.endsWith("',") ||
+            line.endsWith('",');
+        const implementationExpression =
+            line.includes('.') && line.includes('(');
 
-    let pattern;
-    if (declarationExpression) {
-      pattern = regexp.COMMAND_DECLARATION;
-    } else if (implementationExpression) {
-      pattern = regexp.COMMAND_USAGE;
-    } else {
-      pattern = regexp.TS_DEFINITION;
+        let pattern;
+        if (declarationExpression) {
+            pattern = regexp.COMMAND_DECLARATION;
+        } else if (implementationExpression) {
+            pattern = regexp.COMMAND_USAGE;
+        } else {
+            pattern = regexp.TS_DEFINITION;
+        }
+
+        const match = line.match(pattern);
+        if (!match) {
+            return {
+                commandName: null,
+                err: `not found matches in "${line}"`
+            };
+        }
+
+        const matches = _.flatMap(match, () => pattern.exec(line).pop());
+        const selectionIndex = editor.selection.start.character;
+
+        const indexedMatches = matches.map((m) => {
+            const index = line.indexOf(m);
+            return {
+                start: index,
+                end: index + m.length,
+                match: m
+            };
+        });
+
+        const closest =
+            findOverlap(indexedMatches, selectionIndex) ||
+            findClosestRange(indexedMatches, selectionIndex);
+
+        if (!closest) {
+            return {
+                commandName: null,
+                err: `not found closest command in "${line}" at index ${selectionIndex}`
+            };
+        }
+
+        return {
+            commandName: closest.match
+                .split('.')
+                .pop()
+                .trim()
+                .replace(/['"`]/g, ''),
+            err: null
+        };
     }
-
-    const match = line.match(pattern);
-    if (!match) {
-      return {
-        commandName: null,
-        err: `not found matches in "${line}"`
-      };
-    }
-
-    const matches = _.flatMap(match, () => pattern.exec(line).pop());
-    const selectionIndex = editor.selection.start.character;
-
-    const indexedMatches = matches.map(m => {
-      const index = line.indexOf(m);
-      return {
-        start: index,
-        end: index + m.length,
-        match: m
-      };
-    });
-
-    const closest =
-      findOverlap(indexedMatches, selectionIndex) ||
-      findClosestRange(indexedMatches, selectionIndex);
-
-    if (!closest) {
-      return {
-        commandName: null,
-        err: `not found closest command in "${line}" at index ${selectionIndex}`
-      };
-    }
-
     return {
-      commandName: closest.match.split('.').pop().trim().replace(/['"`]/g, ''),
-      err: null
+        commandName: editor.document.getText(editor.selection),
+        err: null
     };
-  }
-  return {
-    commandName: editor.document.getText(editor.selection),
-    err: null
-  };
 };
 
 /**
@@ -106,23 +115,26 @@ const detectCustomCommand = () => {
  *  - open document with cursor on command definition
  */
 const openCustomCommand = () => {
-  const { commandName, err } = detectCustomCommand();
-  if (err) {
-    vscode.show('err', message.NO_COMMAND_DETECTED(err));
-    return;
-  }
-  const commandsFolder = path.join(root, path.normalize(customCommandsFolder));
-  const location = cypressCommandLocation(commandsFolder, commandName);
-  !location &&
-    vscode.show(
-      'err',
-      message.NO_COMMAND_LOCATION(commandName, commandsFolder)
+    const { commandName, err } = detectCustomCommand();
+    if (err) {
+        vscode.show('err', message.NO_COMMAND_DETECTED(err));
+        return;
+    }
+    const commandsFolder = path.join(
+        root,
+        path.normalize(customCommandsFolder)
     );
-  const { file, loc } = location;
-  vscode.openDocumentAtPosition(file, loc);
+    const location = cypressCommandLocation(commandsFolder, commandName);
+    !location &&
+        vscode.show(
+            'err',
+            message.NO_COMMAND_LOCATION(commandName, commandsFolder)
+        );
+    const { file, loc } = location;
+    vscode.openDocumentAtPosition(file, loc);
 };
 
 module.exports = {
-  openCustomCommand,
-  detectCustomCommand
+    openCustomCommand,
+    detectCustomCommand
 };
