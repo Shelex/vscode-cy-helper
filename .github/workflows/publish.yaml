@@ -12,12 +12,14 @@ jobs:
               with:
                   node-version: 14
             - run: npm install
-            - name: Publish to Open VSX Registry
-              uses: HaaLeo/publish-vscode-extension@v0
-              with:
-                  pat: ${{ secrets.OPEN_VSX_TOKEN }}
             - name: Publish to Visual Studio Marketplace
               uses: HaaLeo/publish-vscode-extension@v0
               with:
                   pat: ${{ secrets.PUBLISHER_TOKEN }}
                   registryUrl: https://marketplace.visualstudio.com
+            # should update publisher for vsx registry as it uses publisher Shelex
+            - run: node -e "let pkg=require('./package.json'); pkg.publisher='Shelex'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2))"
+            - name: Publish to Open VSX Registry
+              uses: HaaLeo/publish-vscode-extension@v0
+              with:
+                  pat: ${{ secrets.OPEN_VSX_TOKEN }}
