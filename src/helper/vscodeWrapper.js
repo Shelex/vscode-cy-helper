@@ -80,6 +80,7 @@ class VS {
      * @property {boolean} cucumberFixtureAutocompleteOnQuotes
      * @property {boolean} reuseTerminalInstance
      * @property {jqueryLocators} jqueryLocators
+     * @property {string} cypressCodeLensePattern
      * @returns {config}
      */
     config() {

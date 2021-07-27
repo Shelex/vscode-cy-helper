@@ -1,3 +1,4 @@
+const minimatch = require('minimatch');
 const VS = require('../helper/vscodeWrapper');
 const vscode = new VS();
 const {
@@ -7,13 +8,18 @@ const {
     SCENARIO
 } = require('../helper/constants');
 
-const { menuItems } = vscode.config();
+const { menuItems, cypressCodeLensePattern } = vscode.config();
 
 class CodeLensForRunProvider {
     provideCodeLenses(document) {
         if (!menuItems.OpenCypress && !menuItems.RunCypress) {
             return;
         }
+
+        if (!minimatch(document.fileName, cypressCodeLensePattern)) {
+            return;
+        }
+
         this.codeLenses = [];
         const cucumberPreprocessorUsed = document.languageId === 'feature';
 
