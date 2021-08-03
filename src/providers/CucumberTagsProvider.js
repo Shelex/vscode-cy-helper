@@ -4,11 +4,57 @@ const { allureLabels } = require('../helper/constants');
 const { cucumberTagsAutocomplete } = vscode.config();
 const { enable, allurePlugin, tags } = cucumberTagsAutocomplete;
 
-const prepareSnippetForLabel = (label) => {
-    let snippet = ['tms', 'issue', 'link'].includes(label)
-        ? `${label}("\${1:name}","\${2:url}")`
-        : `${label}("\${1:value}")`;
-    return snippet;
+const prepareSnippetsForLabel = (label) => {
+    const documentation = {
+        tms: {
+            docs: 'Insert test id',
+            updatedLabel: `tms(id)`
+        },
+        issue: {
+            docs: 'Insert issue id',
+            updatedLabel: `issue(id)`
+        },
+        link: {
+            docs: 'Insert link url',
+            updatedLabel: `link(url)`
+        },
+        default: {
+            docs: 'Insert value',
+            updatedLabel: label
+        }
+    };
+
+    const snippet = documentation[label] || documentation.default;
+
+    const snippets = [
+        {
+            label: snippet.updatedLabel,
+            docs: snippet.docs,
+            text: `${label}("\${1:value}")`
+        }
+    ];
+
+    if (['tms', 'issue', 'link'].includes(label)) {
+        const doubleArgumentDocs = {
+            tms: 'Insert display name and test id',
+            issue: 'Insert display name and issue id',
+            link: 'Insert display name and url'
+        };
+
+        const updatedLabel = {
+            tms: `tms(name,id)`,
+            issue: `issue(name,id)`,
+            link: `link(name,url)`
+        };
+
+        snippets.push({
+            label: updatedLabel[label],
+            docs: doubleArgumentDocs[label],
+            text: `${label}("\${1:name}","\${2:url}")`
+        });
+    }
+
+    return snippets;
 };
 
 class CucumberTagsProvider {
@@ -26,19 +72,19 @@ class CucumberTagsProvider {
         }));
 
         allurePlugin &&
-            allureLabels.forEach((label) =>
-                completions.push({
-                    label: label,
-                    // type of completion is function
-                    documentation: ['tms', 'issue', 'link'].includes(label)
-                        ? `Insert link name and url`
-                        : `Insert value`,
-                    kind: 2,
-                    insertText: vscode.SnippetString(
-                        prepareSnippetForLabel(label)
-                    )
-                })
-            );
+            allureLabels.forEach((label) => {
+                const snippets = prepareSnippetsForLabel(label);
+
+                snippets.forEach((snippet) => {
+                    completions.push({
+                        label: snippet.label,
+                        // type of completion is function
+                        documentation: snippet.docs,
+                        kind: 2,
+                        insertText: vscode.SnippetString(snippet.text)
+                    });
+                });
+            });
         return {
             items: completions
         };

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.1] - 2020-08-03
+
+### Changed
+
+-   improved snippets for allure cucumber tags and provided option to use single argument, due to cypress-allure-plugin v2.9.0
+
 ## [2.0.0] - 2020-07-27
 
 ### Changed

@@ -1,6 +1,6 @@
 {
     "name": "vscode-cy-helper",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "displayName": "Cypress Helper v2",
     "description": "Extension for cypress.io testing tool",
     "main": "./src/extension",
@@ -294,17 +294,17 @@
     "devDependencies": {
         "@types/fs-extra": "9.0.12",
         "@types/glob": "7.1.4",
-        "@types/lodash": "4.14.171",
+        "@types/lodash": "4.14.172",
         "@types/node": "15.0.2",
         "@types/vscode": "1.58.1",
-        "eslint": "7.31.0",
+        "eslint": "7.32.0",
         "eslint-config-prettier": "8.3.0",
         "eslint-plugin-prettier": "3.4.0",
         "prettier": "2.3.2"
     },
     "dependencies": {
-        "@babel/parser": "7.14.8",
-        "@babel/traverse": "7.14.8",
+        "@babel/parser": "7.14.9",
+        "@babel/traverse": "7.14.9",
         "fast-glob": "3.2.7",
         "fs-extra": "10.0.0",
         "gherkin": "5.1.0",
