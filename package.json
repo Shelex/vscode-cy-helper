@@ -1,6 +1,6 @@
 {
     "name": "vscode-cy-helper",
-    "version": "2.0.1",
+    "version": "2.1.0",
     "displayName": "Cypress Helper v2",
     "description": "Extension for cypress.io testing tool",
     "main": "./src/extension",
@@ -287,6 +287,38 @@
                     "type": "string",
                     "default": "**/cypress/**/*.+(js|ts|feature)",
                     "description": "To enable Cypress Open \\ Cypress Run \\ Set 'only' code lenses just for specific file pattern"
+                },
+                "cypressHelper.jiraAllureAutocomplete": {
+                    "type": "object",
+                    "default": {
+                        "enable": false,
+                        "atlassianUsername": "",
+                        "atlassianApiKey": "",
+                        "jiraHost": ""
+                    },
+                    "description": "set up jira and xray sync for tms matching",
+                    "properties": {
+                        "enable": {
+                            "type": "boolean",
+                            "default": false,
+                            "description": "enable jira/xray autocomplete"
+                        },
+                        "atlassianApiKey": {
+                            "type": "string",
+                            "default": "",
+                            "description": "specify atlassian personal api key"
+                        },
+                        "atlassianUsername": {
+                            "type": "string",
+                            "default": "",
+                            "description": "specify username for jira account"
+                        },
+                        "jiraHost": {
+                            "type": "string",
+                            "default": "",
+                            "description": "specify domain for your jira instance"
+                        }
+                    }
                 }
             }
         }
@@ -296,19 +328,21 @@
         "@types/glob": "7.1.4",
         "@types/lodash": "4.14.172",
         "@types/node": "15.0.2",
-        "@types/vscode": "1.58.1",
+        "@types/vscode": "1.59.0",
         "eslint": "7.32.0",
         "eslint-config-prettier": "8.3.0",
         "eslint-plugin-prettier": "3.4.0",
         "prettier": "2.3.2"
     },
     "dependencies": {
-        "@babel/parser": "7.14.9",
-        "@babel/traverse": "7.14.9",
+        "@babel/parser": "7.15.3",
+        "@babel/traverse": "7.15.0",
+        "axios": "0.21.1",
         "fast-glob": "3.2.7",
         "fs-extra": "10.0.0",
         "gherkin": "5.1.0",
         "lodash": "4.17.21",
-        "minimatch": "3.0.4"
+        "minimatch": "3.0.4",
+        "string-similarity-js": "^2.1.4"
     }
 }
