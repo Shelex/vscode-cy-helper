@@ -46,6 +46,15 @@ const readFile = (filepath) =>
     null;
 
 /**
+ * write object to json file
+ * @param {object} obj - object that would be converted to json
+ * @param {string} path - fs path to write file
+ */
+const writeJsonFile = (obj, path) => {
+    fs.writeJsonSync(path, obj, { spaces: 4 });
+};
+
+/**
  * Prompts user to reload editor window in order for configuration change to take effect.
  */
 function promptToReloadWindow(event) {
@@ -71,5 +80,6 @@ module.exports = {
     readFilesFromDir,
     readFile,
     fileExist,
+    writeJsonFile,
     promptToReloadWindow
 };

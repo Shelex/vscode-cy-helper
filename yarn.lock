@@ -677,6 +677,11 @@ functional-red-black-tree@^1.0.1:
   resolved "https://registry.yarnpkg.com/functional-red-black-tree/-/functional-red-black-tree-1.0.1.tgz#1b0ab3bd553b2a0d6399d29c0e3ea0b252078327"
   integrity sha1-GwqzvVU7Kg1jmdKcDj6gslIHgyc=
 
+genson-js@0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/genson-js/-/genson-js-0.0.6.tgz#75b6fda05e482fbc238991014b7beb01bf2ea867"
+  integrity sha512-2ccgHYucyEb7rqYhfj7twxGKSqu0qjdK0dJZcsKiShePRz8Y1mZYbC3l4vyKWyzVj8dUpLTlIghX7MPUPhbAmQ==
+
 gherkin@5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/gherkin/-/gherkin-5.1.0.tgz#684bbb03add24eaf7bdf544f58033eb28fb3c6d5"

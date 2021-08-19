@@ -13,8 +13,7 @@ const {
     findUnusedCucumberSteps,
     findCucumberStepUsage
 } = require('./cucumberStepsUsage');
-const { parseHAR } = require('./90poe/parseHAR');
-const { openJsonSchemaGenerator } = require('./90poe/openJsonSchemaGenerator');
+const { generateJsonSchema } = require('./generateJsonSchema');
 const { removeTags } = require('./helper/terminal');
 const { promptToReloadWindow } = require('./helper/utils');
 const FixtureCompletionProvider = require('./providers/FixtureCompletionProvider');
@@ -84,12 +83,9 @@ const activate = (context) => {
             'cypressHelper.createDefaultTsConfig',
             createDefaultTsConfig
         ),
-        vscode.commands.registerCommand('cypressHelper.parseHar', (file) =>
-            parseHAR(file)
-        ),
         vscode.commands.registerCommand(
             'cypressHelper.generateJsonSchema',
-            (file) => openJsonSchemaGenerator(file)
+            (file) => generateJsonSchema(file)
         ),
         vscode.languages.registerCompletionItemProvider(
             allLanguagesSchema,

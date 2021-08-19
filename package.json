@@ -1,6 +1,6 @@
 {
     "name": "vscode-cy-helper",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "displayName": "Cypress Helper v2",
     "description": "Extension for cypress.io testing tool",
     "main": "./src/extension",
@@ -28,7 +28,6 @@
         "onCommand:cypressHelper.findCucumberStepUsage",
         "onCommand:cypressHelper.findCustomCommandReferences",
         "onCommand:cypressHelper.createDefaultTsConfig",
-        "onCommand:cypressHelper.parseHar",
         "onCommand:cypressHelper.generateJsonSchema",
         "onLanguage:javascript",
         "onLanguage:typescript",
@@ -81,21 +80,12 @@
                 "title": "Cypress: Create default tsconfig.json file"
             },
             {
-                "command": "cypressHelper.parseHar",
-                "title": "Cypress: Convert HAR into fixtures"
-            },
-            {
                 "command": "cypressHelper.generateJsonSchema",
                 "title": "Cypress: Generate JSON Schema"
             }
         ],
         "menus": {
             "explorer/context": [
-                {
-                    "command": "cypressHelper.parseHar",
-                    "when": "resourceExtname == .har && config.cypressHelper.menuItems.ParseHAR",
-                    "group": "7_modification"
-                },
                 {
                     "command": "cypressHelper.generateJsonSchema",
                     "when": "resourceExtname == .json && config.cypressHelper.menuItems.SchemaGenerator",
@@ -190,8 +180,7 @@
                         "GoToCustomCommand": true,
                         "FindCustomCommandReferences": true,
                         "FindStepDefinitionReferences": true,
-                        "SchemaGenerator": false,
-                        "ParseHAR": false,
+                        "SchemaGenerator": true,
                         "mockAutocomplete": false
                     },
                     "description": "display menu items for commands",
@@ -219,6 +208,10 @@
                                 "default": true
                             },
                             "FindStepDefinitionReferences": {
+                                "type": "boolean",
+                                "default": true
+                            },
+                            "SchemaGenerator": {
                                 "type": "boolean",
                                 "default": true
                             }
@@ -340,6 +333,7 @@
         "axios": "0.21.1",
         "fast-glob": "3.2.7",
         "fs-extra": "10.0.0",
+        "genson-js": "0.0.6",
         "gherkin": "5.1.0",
         "lodash": "4.17.21",
         "minimatch": "3.0.4",
