@@ -26,6 +26,8 @@ Cypress extension for vs code.
 -   [Fixture path go to definition](#9-fixtures-definition)
 -   [Alias autocompletion](#10-alias-autocompletion)
 -   [Alias go to definition](#11-alias-definition)
+-   [cy.task autocompletion](#17-cypress-task-autocompletion)
+-   [cy.task go to definition](#18-cypress-task-definition)
 -   [Cucumber tags autocompletion](#12-cucumber-tag-autocompletion)
 -   [Create default tsconfig file](#13-create-default-tsconfig-file)
 -   [Keypress events snippets inside cy.type autocompletion](#14-keypress-events-snippets-inside-cy.type-autocompletion)
@@ -198,6 +200,18 @@ Is enabled by default, to disable set `cypressHelper.menuItems` `SchemaGenerator
 File will have name of source file + `Schema`, like `example.json` => `exampleSchema.json`, and title with source file name, like `example`.
 
 ![](./assets/jsonSchema.gif)
+
+### 17. Cypress task autocompletion
+
+Autocompletion for `cy.task()`.
+
+![](./assets/cyTaskCompletion.gif)
+
+### 18. Cypress task definition
+
+Go to definition and Peek definition options are available for `cy.task()`.
+
+![](./assets/cyTaskDefinition.gif)
 
 ## License
 

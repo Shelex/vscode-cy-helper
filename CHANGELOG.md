@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - YYYY-MM-DD
 
+## [2.3.0] - 2020-09-17
+
+### Added
+
+-   autocomplete for `cy.task`
+-   go to definition for `cy.task`
+
 ## [2.2.0] - 2020-08-19
 
 ### Added

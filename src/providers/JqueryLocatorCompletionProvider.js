@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const traverse = require('@babel/traverse');
 const minimatch = require('minimatch');
-const { parseText } = require('../parser/AST');
+const { parseText, astLocationInsidePosition } = require('../parser/AST');
 const VS = require('../helper/vscodeWrapper');
 const vscode = new VS();
 const { jqueryLocators } = vscode.config();
@@ -19,20 +19,6 @@ const {
     pseudo,
     attributes
 } = require('../helper/jqueryDocs');
-
-const positionInside = (loc, position) => {
-    if (!loc || !position) {
-        return;
-    }
-    // current position after cy.type argument start
-    return (
-        _.get(loc, 'start.line') <= position.line + 1 &&
-        _.get(loc, 'start.column') <= position.character &&
-        // current position before cy.type argument end
-        _.get(loc, 'start.line') >= position.line + 1 &&
-        _.get(loc, 'end.column') >= position.character
-    );
-};
 
 const fileMatchPatterns = (file) => {
     const excluded = excludePatterns.some((pattern) =>
@@ -57,22 +43,22 @@ const shouldHaveAutocomplete = (documentContent, position) => {
         enter(path) {
             // should be in string or template literal element and when position is inside location
             if (
-                positionInside(_.get(path, 'node.loc'), position) &&
                 (_.get(path, 'node.type') === 'StringLiteral' ||
-                    _.get(path, 'node.type') === 'TemplateElement')
+                    _.get(path, 'node.type') === 'TemplateElement') &&
+                astLocationInsidePosition(_.get(path, 'node.loc'), position)
             ) {
                 metrics.insideString = true;
             }
 
             // should check if it is inside cypress commands
             if (
-                positionInside(
-                    _.get(path, 'node.arguments[0].loc'),
-                    position
-                ) &&
                 _.get(path, 'node.callee.type') === 'MemberExpression' &&
                 commandsForAutocompletion.includes(
                     _.get(path, 'node.callee.property.name')
+                ) &&
+                astLocationInsidePosition(
+                    _.get(path, 'node.arguments[0].loc'),
+                    position
                 )
             ) {
                 metrics.insideCyCommand = true;

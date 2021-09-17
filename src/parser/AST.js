@@ -249,9 +249,36 @@ const parseStepDefinitions = (stepDefinitionPath) =>
         }
     }).filter(_.identity);
 
+const astLocationInsidePosition = (loc, position) => {
+    if (!loc || !position) {
+        return;
+    }
+    // current position after cy.type argument start
+    return (
+        _.get(loc, 'start.line') <= position.line + 1 &&
+        _.get(loc, 'start.column') <= position.character &&
+        // current position before cy.type argument end
+        _.get(loc, 'start.line') >= position.line + 1 &&
+        _.get(loc, 'end.column') >= position.character
+    );
+};
+
+const astExpressionContainsOffset = (expression, offset) => {
+    if (!expression || !offset) {
+        return;
+    }
+    // current offset in range of expression
+    return (
+        _.get(expression, 'start') <= offset &&
+        _.get(expression, 'end') >= offset
+    );
+};
+
 module.exports = {
     parseJS,
     parseText,
+    astLocationInsidePosition,
+    astExpressionContainsOffset,
     cypressCommandLocation,
     typeDefinitions,
     parseStepDefinitions,

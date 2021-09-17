@@ -22,6 +22,10 @@ const AliasCompletionProvider = require('./providers/AliasCompletionProvider');
 const {
     AliasDefinitionProvider
 } = require('./providers/AliasDefinitionProvider');
+const CyTaskCompletionProvider = require('./providers/CyTaskCompletionProvider');
+const {
+    CyTaskDefinitionProvider
+} = require('./providers/CyTaskDefinitionProvider');
 const CucumberTagsProvider = require('./providers/CucumberTagsProvider');
 const GQLMockCompletionProvider = require('./90poe/gqlMockCompletionProvider');
 const CommandDefinitionProvider = require('./providers/CommandDefinitionProvider');
@@ -133,6 +137,16 @@ const activate = (context) => {
             ':',
             '=',
             ' '
+        ),
+        vscode.languages.registerCompletionItemProvider(
+            JsAndTsActivationSchema,
+            new CyTaskCompletionProvider(),
+            "'",
+            '"'
+        ),
+        vscode.languages.registerDefinitionProvider(
+            JsAndTsActivationSchema,
+            new CyTaskDefinitionProvider()
         ),
         vscode.languages.registerDefinitionProvider(
             JsAndTsActivationSchema,
