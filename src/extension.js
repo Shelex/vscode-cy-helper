@@ -1,6 +1,6 @@
 const vscode = require('vscode');
 const { openSpecFile } = require('./openSpecFile');
-const { setOnlyTag, clearOnlyTag } = require('./testWithOnlyTags');
+const { setTag, clearTag } = require('./testWithOnlyTags');
 const { openCustomCommand } = require('./openCustomCommand');
 const { generateCustomCommandTypes } = require('./generateCustomCommandTypes');
 const { createDefaultTsConfig } = require('./createDefaultTsConfig');
@@ -54,11 +54,8 @@ const activate = (context) => {
             'cypressHelper.openSpecFile',
             openSpecFile
         ),
-        vscode.commands.registerCommand('cypressHelper.setOnlyTag', setOnlyTag),
-        vscode.commands.registerCommand(
-            'cypressHelper.clearOnlyTag',
-            clearOnlyTag
-        ),
+        vscode.commands.registerCommand('cypressHelper.setTag', setTag),
+        vscode.commands.registerCommand('cypressHelper.clearTag', clearTag),
         vscode.commands.registerCommand(
             'cypressHelper.openCustomCommand',
             openCustomCommand

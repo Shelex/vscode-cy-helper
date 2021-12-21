@@ -4,6 +4,7 @@ const vscode = new VS();
 const {
     TEST_BLOCK,
     TEST_ONLY_BLOCK,
+    TEST_SKIP_BLOCK,
     FOCUS_TAG_FORMATTED,
     SCENARIO
 } = require('../helper/constants');
@@ -25,7 +26,7 @@ class CodeLensForRunProvider {
 
         const texts = document.getText().split('\n');
 
-        const tag = cucumberPreprocessorUsed ? '"@focus"' : '".only"';
+        const defaultTag = cucumberPreprocessorUsed ? '"@focus"' : '".only"';
 
         return texts
             .map((text, index) => ({ text, index }))
@@ -33,17 +34,23 @@ class CodeLensForRunProvider {
                 (line) =>
                     line.text.trim().startsWith(SCENARIO) ||
                     line.text.trim().startsWith(TEST_BLOCK) ||
-                    line.text.trim().startsWith(TEST_ONLY_BLOCK)
+                    line.text.trim().startsWith(TEST_ONLY_BLOCK) ||
+                    line.text.trim().startsWith(TEST_SKIP_BLOCK)
             )
             .reduce((lenses, line) => {
                 const { text, index } = line;
                 const { range } = document.lineAt(index);
+                const tagToClear = text.trim().startsWith(TEST_SKIP_BLOCK)
+                    ? '".skip"'
+                    : defaultTag;
+
                 const useClearTagLense =
                     cucumberPreprocessorUsed && index > 0
                         ? texts[index - 1]
                               .trim()
                               .startsWith(FOCUS_TAG_FORMATTED)
-                        : text.trim().startsWith(TEST_ONLY_BLOCK);
+                        : text.trim().startsWith(TEST_ONLY_BLOCK) ||
+                          text.trim().startsWith(TEST_SKIP_BLOCK);
                 menuItems.OpenCypress &&
                     lenses.push(
                         vscode.codeLens(range, {
@@ -64,24 +71,43 @@ class CodeLensForRunProvider {
                             arguments: ['run', document.fileName]
                         })
                     );
-                useClearTagLense
-                    ? lenses.push(
-                          vscode.codeLens(range, {
-                              title: `Clear ${tag}`,
-                              tooltip: `clear ${tag}`,
-                              command: 'cypressHelper.clearOnlyTag',
-                              arguments: [index, cucumberPreprocessorUsed]
-                          })
-                      )
-                    : lenses.push(
-                          vscode.codeLens(range, {
-                              title: `Set ${tag}`,
-                              tooltip:
-                                  'open single test with command configured in CypressHelper.commandForOpen',
-                              command: 'cypressHelper.setOnlyTag',
-                              arguments: [index, cucumberPreprocessorUsed]
-                          })
-                      );
+                if (useClearTagLense) {
+                    lenses.push(
+                        vscode.codeLens(range, {
+                            title: `Clear ${tagToClear}`,
+                            tooltip: `clear ${tagToClear}`,
+                            command: 'cypressHelper.clearTag',
+                            arguments: [index, cucumberPreprocessorUsed]
+                        })
+                    );
+                }
+                ['only', 'skip'].forEach((tagKind) => {
+                    const isSkip = tagKind === 'skip';
+                    const configName = isSkip ? 'ItSkip' : 'ItOnly';
+
+                    if (isSkip && cucumberPreprocessorUsed) {
+                        return;
+                    }
+
+                    if (!menuItems[configName] || useClearTagLense) {
+                        return;
+                    }
+
+                    const tag = isSkip ? '".skip"' : defaultTag;
+
+                    lenses.push(
+                        vscode.codeLens(range, {
+                            title: `Set ${tag}`,
+                            tooltip: `set ${tag}`,
+                            command: 'cypressHelper.setTag',
+                            arguments: [
+                                tagKind,
+                                index,
+                                cucumberPreprocessorUsed
+                            ]
+                        })
+                    );
+                });
                 return lenses;
             }, []);
     }

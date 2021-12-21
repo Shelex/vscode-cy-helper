@@ -7,41 +7,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - YYYY-MM-DD
 
-## [2.3.0] - 2020-09-17
+## [2.4.0] - 2021-12-21
+
+### Added
+
+-   config options `ItSkip` and `ItOnly` for `menuItems` object which are responsible for code lenses visibility
+-   code lense for adding and clearing `it.skip`, address #3
+
+## [2.3.0] - 2021-09-17
 
 ### Added
 
 -   autocomplete for `cy.task`
 -   go to definition for `cy.task`
 
-## [2.2.0] - 2020-08-19
+## [2.2.0] - 2021-08-19
 
 ### Added
 
 -   Generate JSON schema for json files menu item, enable menu item by default
 
-## [2.1.0] - 2020-08-18
+## [2.1.0] - 2021-08-18
 
 ### Added
 
 -   Autocompletion provider in gherkin files for allure tms and issue links autocompletion with xray test cases or jira issues
 
-## [2.0.1] - 2020-08-03
+## [2.0.1] - 2021-08-03
 
 ### Changed
 
 -   improved snippets for allure cucumber tags and provided option to use single argument, due to cypress-allure-plugin v2.9.0
 
-## [2.0.0] - 2020-07-27
+## [2.0.0] - 2021-07-27
 
 ### Changed
 
 -   moved to forked repository, new version is available by name "Cypress Helper v2"
 -   publishing a fix for https://github.com/90poe/vscode-cy-helper/issues/60 as additional config for code lenses, for example `"cypressHelper.cypressCodeLensePattern": "**/e2e/**/*.+(js|ts|feature)"` will add code lenses just for files inside e2e folder
 
-## [1.2.5] - 2020-04-27
+## [1.2.5] - 2021-04-27
 
-## [1.2.4] - 2020-04-18
+## [1.2.4] - 2021-04-18
 
 ### Fixed
 
@@ -51,13 +58,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   cucumber allure tags autocomplete: link and parentSuite labels
 
-## [1.2.2] - 2020-04-01
+## [1.2.2] - 2021-04-01
 
 ### Fixed
 
 -   #48, address issue when errors are thrown for some commands on initialisation it blocks other functionality
 
-## [1.2.1] - 2020-03-20
+## [1.2.1] - 2021-03-20
 
 ### Changed
 
@@ -67,7 +74,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   #43, solved by checking if package.json exist in sub-folders. In case it exist we treat folder as root for new terminal to support Cypress Run and Cypress Open code lenses for nested projects and calculate corresponding relative path to spec or root path.
 
-## [1.2.0] - 2020-03-19
+## [1.2.0] - 2021-03-19
 
 ### Added
 
@@ -83,19 +90,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   cy.type keypress events autocomplete usage in template literals
 
-## [1.1.0] - 2020-03-15
+## [1.1.0] - 2021-03-15
 
 ### Added
 
 -   #39, autocompletion for cy.type keyPress sequences
 
-## [1.0.3] - 2020-02-15
+## [1.0.3] - 2021-02-15
 
 ### Fixed
 
 -   #34, capitalize absolute windows path when lowercase used
 
-## [1.0.2] - 2020-01-29
+## [1.0.2] - 2021-01-29
 
 ### Fixed
 
