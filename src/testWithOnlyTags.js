@@ -5,9 +5,8 @@ const {
     FOCUS_TAG_FORMATTED,
     ONLY_BLOCK,
     message,
-    TEST_BLOCK,
-    TEST_ONLY_BLOCK,
-    TEST_SKIP_BLOCK,
+    IT,
+    SPECIFY,
     SKIP_BLOCK
 } = require('./helper/constants');
 
@@ -31,18 +30,19 @@ const setTag = (kind, scenarioIndex, isCucumber) => {
         // for javascript mocha syntax it.only() is required
         const { text, range } = editor.document.lineAt(scenarioIndex);
 
-        const indexOfTest = text.indexOf(TEST_BLOCK);
-        const indexOfOnly = text.indexOf(TEST_ONLY_BLOCK);
-        const indexOfSkip = text.indexOf(TEST_SKIP_BLOCK);
+        const indexOfSpecify = text.indexOf(SPECIFY.BLOCK);
 
-        !indexOfTest &&
-            !indexOfOnly &&
-            !indexOfSkip &&
-            vscode.show('err', message.NO_TEST);
+        const testNotFound = [Object.values(IT), Object.values(SPECIFY)].every(
+            (block) => text.indexOf(block) === -1
+        );
+
+        testNotFound && vscode.show('err', message.NO_TEST);
+
+        const block = indexOfSpecify === -1 ? IT.BLOCK : SPECIFY.BLOCK;
 
         const newText = text.replace(
-            TEST_BLOCK,
-            `it${kind === 'skip' ? SKIP_BLOCK : ONLY_BLOCK}(`
+            block,
+            `${block.slice(0, -1)}${kind === 'skip' ? SKIP_BLOCK : ONLY_BLOCK}(`
         );
         vscode.editDocument(range, newText);
     }

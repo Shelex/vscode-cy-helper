@@ -39,6 +39,9 @@ class VS {
     }
 
     activeTextEditor() {
+        if (!this._window.activeTextEditor) {
+            this.show('error', 'editor is not opened');
+        }
         return this._window.activeTextEditor;
     }
 
@@ -51,7 +54,9 @@ class VS {
     }
 
     root() {
-        return this._workspace.workspaceFolders[0].uri.fsPath;
+        return this._workspace.workspaceFolders
+            ? this._workspace.workspaceFolders[0].uri.fsPath
+            : '';
     }
     /**
      *

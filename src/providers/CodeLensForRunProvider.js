@@ -2,9 +2,8 @@ const minimatch = require('minimatch');
 const VS = require('../helper/vscodeWrapper');
 const vscode = new VS();
 const {
-    TEST_BLOCK,
-    TEST_ONLY_BLOCK,
-    TEST_SKIP_BLOCK,
+    IT,
+    SPECIFY,
     FOCUS_TAG_FORMATTED,
     SCENARIO
 } = require('../helper/constants');
@@ -28,29 +27,39 @@ class CodeLensForRunProvider {
 
         const defaultTag = cucumberPreprocessorUsed ? '"@focus"' : '".only"';
 
+        const isTest = (line) =>
+            [SCENARIO, Object.values(IT), Object.values(SPECIFY)].some(
+                (block) => line.text.trim().startsWith(block)
+            );
+
         return texts
             .map((text, index) => ({ text, index }))
-            .filter(
-                (line) =>
-                    line.text.trim().startsWith(SCENARIO) ||
-                    line.text.trim().startsWith(TEST_BLOCK) ||
-                    line.text.trim().startsWith(TEST_ONLY_BLOCK) ||
-                    line.text.trim().startsWith(TEST_SKIP_BLOCK)
-            )
+            .filter((line) => isTest(line))
             .reduce((lenses, line) => {
                 const { text, index } = line;
                 const { range } = document.lineAt(index);
-                const tagToClear = text.trim().startsWith(TEST_SKIP_BLOCK)
+
+                const usedSkip = (text) =>
+                    [IT.SKIP, SPECIFY.SKIP].some((block) =>
+                        text.trim().startsWith(block)
+                    );
+
+                const tagToClear = usedSkip(text.trim())
                     ? '".skip"'
                     : defaultTag;
+
+                const usedSkipOrOnly = (text) =>
+                    [IT.ONLY, IT.SKIP, SPECIFY.ONLY, SPECIFY.SKIP].some(
+                        (block) => text.trim().startsWith(block)
+                    );
 
                 const useClearTagLense =
                     cucumberPreprocessorUsed && index > 0
                         ? texts[index - 1]
                               .trim()
                               .startsWith(FOCUS_TAG_FORMATTED)
-                        : text.trim().startsWith(TEST_ONLY_BLOCK) ||
-                          text.trim().startsWith(TEST_SKIP_BLOCK);
+                        : usedSkipOrOnly(text);
+
                 menuItems.OpenCypress &&
                     lenses.push(
                         vscode.codeLens(range, {

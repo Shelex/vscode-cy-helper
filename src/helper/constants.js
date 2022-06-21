@@ -1,12 +1,19 @@
 module.exports = {
     FOCUS_TAG: '@focus ',
     FOCUS_TAG_FORMATTED: '@focus',
-    TEST_BLOCK: 'it(',
+    SPECIFY: {
+        BLOCK: 'specify(',
+        ONLY: 'specify.only(',
+        SKIP: 'specify.skip('
+    },
+    IT: {
+        BLOCK: 'it(',
+        ONLY: 'it.only(',
+        SKIP: 'specify.skip('
+    },
     ONLY_BLOCK: '.only',
     SKIP_BLOCK: '.skip',
     TERMINAL_NAME: 'CypressOpen',
-    TEST_ONLY_BLOCK: 'it.only(',
-    TEST_SKIP_BLOCK: 'it.skip(',
     SCENARIO: 'Scenario',
     CYPRESS_COMMAND_ADD: 'Cypress.Commands.add',
     CUCUMBER_KEYWORDS: ['given', 'when', 'then', 'Given', 'When', 'Then'],

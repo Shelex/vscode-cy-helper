@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - YYYY-MM-DD
 
+## [2.5.0] - 2022-06-21
+
+### Added
+
+-   support for `specify` mocha keyword for
+
+## [2.4.1] - 2022-06-21
+
+### Fixed
+
+-   by [Dane Dukic](https://github.com/ddukic): lack of support for cypress v10 for "Open Cypress" command
+
 ## [2.4.0] - 2021-12-21
 
 ### Added
