@@ -34,12 +34,16 @@ exports.openSpecFile = (type, filename) => {
 
     const terminal = getTerminal(root);
     terminal.show();
+    const commandArguments = commandForOpen.includes('--e2e')
+        ? `--config specPattern="${absolutePath}"`
+        : `--config testFiles="${absolutePath}"`;
+
     const exec =
         type === 'run'
             ? { command: commandForRun, arg: `--spec "${relativePath}"` }
             : {
                   command: commandForOpen,
-                  arg: `--config testFiles="${absolutePath}"`
+                  arg: commandArguments
               };
     terminal.sendText(`${exec.command} ${exec.arg}`);
 };
