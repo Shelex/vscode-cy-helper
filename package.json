@@ -1,6 +1,6 @@
 {
     "name": "vscode-cy-helper",
-    "version": "2.4.0",
+    "version": "2.4.1",
     "displayName": "Cypress Helper v2",
     "description": "Extension for cypress.io testing tool",
     "main": "./src/extension",

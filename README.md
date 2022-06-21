@@ -1,11 +1,11 @@
 # vscode-cy-helper
 
-[![SWUbanner](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://vshymanskyy.github.io/StandWithUkraine/)
+[![SWUbanner](./assets/standWithUkraine.png)](https://vshymanskyy.github.io/StandWithUkraine/)
 
 Cypress extension for vs code.
 (Forked due to publish issues with original repository)
 
-[![Gitter](https://badges.gitter.im/vscode-cy-helper/community.svg)](https://gitter.im/vscode-cy-helper/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/shevtsov.vscode-cy-helper?label=Installs)
+[![Gitter](https://badges.gitter.im/vscode-cy-helper/community.png)](https://gitter.im/vscode-cy-helper/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.png)](https://opensource.org/licenses/Apache-2.0) ![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/shevtsov.vscode-cy-helper?label=Installs)
 
 ## Available functionality
 
