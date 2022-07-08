@@ -16,7 +16,7 @@ const findFixtures = (root, text, context, opts = { absolutePath: false }) => {
         ? 'fixtures'
         : `fixtures/**/${_.last(text.slice(0, -1).split(/"|'|`/))}`;
     if (!baseFolder) {
-        return undefined;
+        return;
     }
 
     // get fs path for fixtures
@@ -26,27 +26,27 @@ const findFixtures = (root, text, context, opts = { absolutePath: false }) => {
             name: ''
         }) || [];
 
-    // find files and folders that are right inside of base folder
-    if (fixtures) {
-        return fixtures
-            .map((fixture) => {
-                const folders = fixture.split('/');
-                const baseFolderIndex = folders.indexOf(
-                    _.last(baseFolder.split('/'))
-                );
-                const relativePath =
-                    baseFolderIndex === -1
-                        ? null
-                        : folders[baseFolderIndex + 1];
-                return opts.absolutePath
-                    ? {
-                          absolute: fixture,
-                          relative: relativePath
-                      }
-                    : relativePath;
-            })
-            .filter(_.identity);
+    if (!fixtures) {
+        return;
     }
+
+    // find files and folders that are right inside of base folder
+    return fixtures
+        .map((fixture) => {
+            const folders = fixture.split('/');
+            const baseFolderIndex = folders.indexOf(
+                _.last(baseFolder.split('/'))
+            );
+            const relativePath =
+                baseFolderIndex === -1 ? null : folders[baseFolderIndex + 1];
+            return opts.absolutePath
+                ? {
+                      absolute: fixture,
+                      relative: relativePath
+                  }
+                : relativePath;
+        })
+        .filter(_.identity);
 };
 
 module.exports = {

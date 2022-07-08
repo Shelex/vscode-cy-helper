@@ -116,42 +116,42 @@ const typeDefinitions = (
 
     const typeDefs = _.flatMap(suitableFiles, (file) => {
         const AST = parseJS(file);
-        if (AST) {
-            const commands = findCypressCommandAddStatements(AST.program.body);
-            const typeDefBody = commands.map((command) => {
-                const { value: commandName, loc } =
-                    command.expression.arguments[0];
-                commandsFound.push(
-                    options.includeLocationData
-                        ? {
-                              name: commandName,
-                              path: file,
-                              loc: loc
-                          }
-                        : commandName
-                );
-
-                let annotation = '';
-                if (options.includeAnnotations) {
-                    const commentBlock = _.chain(command)
-                        .get('leadingComments', [null])
-                        .last()
-                        .value();
-                    const comments = commentBlock
-                        ? _.get(commentBlock, 'value')
-                        : null;
-                    annotation = comments
-                        ? `/*${comments.split('\n').join(SPACE)}*/${SPACE}`
-                        : null;
-                }
-
-                const argsArray = parseArguments(command.expression.arguments);
-                return `${annotation || ''}${commandName}(${argsArray.join(
-                    ', '
-                )}): Chainable<any>`;
-            });
-            return typeDefBody;
+        if (!AST) {
+            return;
         }
+        const commands = findCypressCommandAddStatements(AST.program.body);
+        const typeDefBody = commands.map((command) => {
+            const { value: commandName, loc } = command.expression.arguments[0];
+            commandsFound.push(
+                options.includeLocationData
+                    ? {
+                          name: commandName,
+                          path: file,
+                          loc: loc
+                      }
+                    : commandName
+            );
+
+            let annotation = '';
+            if (options.includeAnnotations) {
+                const commentBlock = _.chain(command)
+                    .get('leadingComments', [null])
+                    .last()
+                    .value();
+                const comments = commentBlock
+                    ? _.get(commentBlock, 'value')
+                    : null;
+                annotation = comments
+                    ? `/*${comments.split('\n').join(SPACE)}*/${SPACE}`
+                    : null;
+            }
+
+            const argsArray = parseArguments(command.expression.arguments);
+            return `${annotation || ''}${commandName}(${argsArray.join(
+                ', '
+            )}): Chainable<any>`;
+        });
+        return typeDefBody;
     }).filter(_.identity);
     return {
         commandsFound: commandsFound,
@@ -200,22 +200,23 @@ const findCucumberCustomTypes = (path) => {
     let cucumberTypes = [];
     readFilesFromDir(path).find((file) => {
         const AST = parseJS(file);
-        if (AST) {
-            cucumberTypes = findCucumberTypeDefinition(AST.program.body).map(
-                (type) => {
-                    const { properties } = type.expression.arguments[0];
-                    const name = properties.find((p) => p.key.name === 'name')
-                        .value.value;
-                    const regexValue = properties.find(
-                        (p) => p.key.name === 'regexp'
-                    ).value.pattern;
-                    return {
-                        name: name,
-                        pattern: regexValue
-                    };
-                }
-            );
+        if (!AST) {
+            return;
         }
+        cucumberTypes = findCucumberTypeDefinition(AST.program.body).map(
+            (type) => {
+                const { properties } = type.expression.arguments[0];
+                const name = properties.find((p) => p.key.name === 'name').value
+                    .value;
+                const regexValue = properties.find(
+                    (p) => p.key.name === 'regexp'
+                ).value.pattern;
+                return {
+                    name: name,
+                    pattern: regexValue
+                };
+            }
+        );
         return cucumberTypes.length;
     });
     return cucumberTypes;
@@ -229,24 +230,24 @@ const findCucumberCustomTypes = (path) => {
 const parseStepDefinitions = (stepDefinitionPath) =>
     _.flatMap(readFilesFromDir(stepDefinitionPath), (file) => {
         const AST = parseJS(file);
-        if (AST) {
-            return findCucumberStepDefinitions(AST.program.body).map((step) => {
-                const stepValue =
-                    _.get(step, 'expression.arguments.0.type') ===
-                    'TemplateLiteral'
-                        ? _.get(
-                              step,
-                              'expression.arguments.0.quasis.0.value.cooked'
-                          )
-                        : _.get(step, 'expression.arguments.0.value');
-                return {
-                    [stepValue]: {
-                        path: file,
-                        loc: step.expression.arguments[0].loc.start
-                    }
-                };
-            });
+        if (!AST) {
+            return;
         }
+        return findCucumberStepDefinitions(AST.program.body).map((step) => {
+            const stepValue =
+                _.get(step, 'expression.arguments.0.type') === 'TemplateLiteral'
+                    ? _.get(
+                          step,
+                          'expression.arguments.0.quasis.0.value.cooked'
+                      )
+                    : _.get(step, 'expression.arguments.0.value');
+            return {
+                [stepValue]: {
+                    path: file,
+                    loc: step.expression.arguments[0].loc.start
+                }
+            };
+        });
     }).filter(_.identity);
 
 const astLocationInsidePosition = (loc, position) => {

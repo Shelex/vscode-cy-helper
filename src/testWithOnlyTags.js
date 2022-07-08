@@ -32,9 +32,10 @@ const setTag = (kind, scenarioIndex, isCucumber) => {
 
         const indexOfSpecify = text.indexOf(SPECIFY.BLOCK);
 
-        const testNotFound = [Object.values(IT), Object.values(SPECIFY)].every(
-            (block) => text.indexOf(block) === -1
-        );
+        const testNotFound = [
+            ...Object.values(IT),
+            ...Object.values(SPECIFY)
+        ].every((block) => text.indexOf(block) === -1);
 
         testNotFound && vscode.show('err', message.NO_TEST);
 

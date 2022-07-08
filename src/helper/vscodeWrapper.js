@@ -176,26 +176,26 @@ class VS {
             notFoundMessage: message.DEFAULT_NO_ITEMS_QUICKMENU
         }
     ) {
-        if (array.length) {
-            const quickPickList = array.map(opts.mapperFunction);
-
-            quickPickList.unshift({
-                label: '',
-                description: opts.header
-            });
-
-            this.showQuickPick(quickPickList).then((pick) => {
-                if (pick) {
-                    const { data } = pick;
-                    this.openDocumentAtPosition(
-                        data.path,
-                        _.get(data, 'loc.start') || data.loc
-                    );
-                }
-            });
-        } else {
+        if (!array.length) {
             this.show('Info', opts.notFoundMessage);
+            return;
         }
+        const quickPickList = array.map(opts.mapperFunction);
+
+        quickPickList.unshift({
+            label: '',
+            description: opts.header
+        });
+
+        this.showQuickPick(quickPickList).then((pick) => {
+            if (pick) {
+                const { data } = pick;
+                this.openDocumentAtPosition(
+                    data.path,
+                    _.get(data, 'loc.start') || data.loc
+                );
+            }
+        });
     }
 
     /**

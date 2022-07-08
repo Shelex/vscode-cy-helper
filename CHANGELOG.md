@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - YYYY-MM-DD
 
+## [2.5.1] - 2022-07-08
+### Fixed
+
+- properly handle `CommandReferencesProvider.provideReferences` when no usage found, address #13
+- cypress execution code lense provider, address #11
+- trigger fixture completion provider on ' and ` characters
+
 ## [2.5.0] - 2022-06-21
 
 ### Added

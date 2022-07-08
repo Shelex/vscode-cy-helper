@@ -113,19 +113,22 @@ exports.generateCustomCommandTypes = (doc, onSave = false) => {
     added.length && vscode.show('info', message.NEW_COMMANDS(added));
     removed.length && vscode.show('info', message.REMOVED_COMMANDS(removed));
     const hasTsConfig = checkTsConfigExist(root);
-    if (!hasTsConfig) {
-        vscode
-            .show(
-                'info',
-                `No tsconfig.json file detected, do you want to create?`,
-                false,
-                'No',
-                'Yes'
-            )
-            .then((selectedAction) => {
-                if (selectedAction === 'Yes') {
-                    writeTsConfig(root);
-                }
-            });
+
+    if (hasTsConfig) {
+        return;
     }
+
+    vscode
+        .show(
+            'info',
+            `No tsconfig.json file detected, do you want to create?`,
+            false,
+            'No',
+            'Yes'
+        )
+        .then((selectedAction) => {
+            if (selectedAction === 'Yes') {
+                writeTsConfig(root);
+            }
+        });
 };

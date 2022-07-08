@@ -34,7 +34,7 @@ class FixtureCompletionProvider {
                 !text.trim().startsWith('@')
             )
         ) {
-            return undefined;
+            return;
         }
 
         // in case of triggering autocomplete for subfolders - detect last folder from already used
@@ -44,33 +44,31 @@ class FixtureCompletionProvider {
 
         const fixtures = findFixtures(vscode.root(), text, context);
 
-        if (fixtures) {
-            // prepare completion items list
-            const fixtureResults = _.uniq(fixtures).reduce(
-                (completions, file) => {
-                    /**
-                     * FILE: 16
-                     * FOLDER: 18
-                     */
-                    const type = file.includes('.') ? 16 : 18;
-                    const insertText =
-                        type === 16 ? file.replace('.json', '') : file;
-                    completions.push({
-                        label: file,
-                        kind: type,
-                        insertText:
-                            firstAutocompletion && !featureFile
-                                ? `"${insertText}"`
-                                : insertText
-                    });
-                    return completions;
-                },
-                []
-            );
-            return {
-                items: fixtureResults
-            };
+        if (!fixtures) {
+            return;
         }
+
+        // prepare completion items list
+        const fixtureResults = _.uniq(fixtures).reduce((completions, file) => {
+            /**
+             * FILE: 16
+             * FOLDER: 18
+             */
+            const type = file.includes('.') ? 16 : 18;
+            const insertText = type === 16 ? file.replace('.json', '') : file;
+            completions.push({
+                label: file,
+                kind: type,
+                insertText:
+                    firstAutocompletion && !featureFile
+                        ? `"${insertText}"`
+                        : insertText
+            });
+            return completions;
+        }, []);
+        return {
+            items: fixtureResults
+        };
     }
 }
 

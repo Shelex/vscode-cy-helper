@@ -94,7 +94,9 @@ const activate = (context) => {
             '(',
             '/',
             '\\',
-            '"'
+            '"',
+            "'",
+            '`'
         ),
         vscode.languages.registerCompletionItemProvider(
             GherkinActivationSchema,
@@ -111,7 +113,7 @@ const activate = (context) => {
             new AliasDefinitionProvider()
         ),
         vscode.languages.registerCompletionItemProvider(
-            [{ scheme: 'file', language: 'feature' }],
+            GherkinActivationSchema,
             new CucumberTagsProvider(),
             '@'
         ),

@@ -64,57 +64,58 @@ const customCommandReferences = () => {
         return;
     }
 
-    if (command) {
-        const commandName = command.replace(regexp.QUOTES, '');
-        const commandPattern = new RegExp(`\\.${commandName}\\(`, 'g');
-        const workspaceFiles = readFilesFromDir(root);
-
-        const references = _.flatMap(workspaceFiles, (file) => {
-            const content = readFile(file) || '';
-            return content.split('\n').map((row, index) => {
-                const hasCommand = commandPattern.exec(row);
-                if (hasCommand) {
-                    const column = row.indexOf(commandName);
-                    return {
-                        path: file,
-                        loc: {
-                            start: {
-                                line: index + 1,
-                                column: column
-                            }
-                        }
-                    };
-                }
-            });
-        }).filter(_.identity);
-
-        return {
-            commandName: commandName,
-            references: references
-        };
+    if (!command) {
+        return;
     }
+
+    const commandName = command.replace(regexp.QUOTES, '');
+    const commandPattern = new RegExp(`\\.${commandName}\\(`, 'g');
+    const workspaceFiles = readFilesFromDir(root);
+
+    const references = _.flatMap(workspaceFiles, (file) => {
+        const content = readFile(file) || '';
+        return content.split('\n').map((row, index) => {
+            const hasCommand = commandPattern.exec(row);
+            if (hasCommand) {
+                const column = row.indexOf(commandName);
+                return {
+                    path: file,
+                    loc: {
+                        start: {
+                            line: index + 1,
+                            column: column
+                        }
+                    }
+                };
+            }
+        });
+    }).filter(_.identity);
+
+    return {
+        commandName: commandName,
+        references: references
+    };
 };
 
 const showCustomCommandReferences = () => {
     const usage = customCommandReferences();
-    if (usage) {
-        const { commandName, references } = usage;
-        vscode.showQuickPickMenu(references, {
-            mapperFunction: (c) => {
-                return {
-                    label: `${c.path.replace(root, '')}:${c.loc.start.line}`,
-                    data: c
-                };
-            },
-            header: message.REFERENCE_COMMAND_FOUND(
-                references.length,
-                commandName
-            ),
-            notFoundMessage: message.REFERENCE_NOT_FOUND(commandName)
-        });
-    } else {
+
+    if (!usage) {
         vscode.show('err', message.REFERENCE_NOT_FOUND());
+        return;
     }
+
+    const { commandName, references } = usage;
+    vscode.showQuickPickMenu(references, {
+        mapperFunction: (c) => {
+            return {
+                label: `${c.path.replace(root, '')}:${c.loc.start.line}`,
+                data: c
+            };
+        },
+        header: message.REFERENCE_COMMAND_FOUND(references.length, commandName),
+        notFoundMessage: message.REFERENCE_NOT_FOUND(commandName)
+    });
 };
 
 module.exports = {

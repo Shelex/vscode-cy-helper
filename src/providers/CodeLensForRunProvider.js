@@ -28,7 +28,7 @@ class CodeLensForRunProvider {
         const defaultTag = cucumberPreprocessorUsed ? '"@focus"' : '".only"';
 
         const isTest = (line) =>
-            [SCENARIO, Object.values(IT), Object.values(SPECIFY)].some(
+            [SCENARIO, ...Object.values(IT), ...Object.values(SPECIFY)].some(
                 (block) => line.text.trim().startsWith(block)
             );
 

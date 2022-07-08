@@ -1,8 +1,21 @@
 const path = require('path');
 const fs = require('fs-extra');
+const _ = require('lodash');
 const glob = require('fast-glob');
 const VS = require('./vscodeWrapper');
 const vscode = new VS();
+
+const cypressExists = () => {
+    const hasCypressFolder = glob
+        .sync(`**/cypress/**`, {
+            onlyDirectories: true,
+            cwd: vscode.root(),
+            suppressErrors: true,
+            ignore: '**/node_modules/**'
+        })
+        .find((folder) => folder.endsWith('cypress'));
+    return hasCypressFolder;
+};
 
 /**
  * Read files recursively from directory
@@ -13,6 +26,9 @@ const readFilesFromDir = (
     folder,
     opts = { extension: '.[j|t]s', name: undefined }
 ) => {
+    if (!cypressExists()) {
+        return [];
+    }
     try {
         const pattern = `${path.normalize(folder).replace(/\\/g, '/')}/**/${
             opts.name || '*'
@@ -59,21 +75,24 @@ const writeJsonFile = (obj, path) => {
  */
 function promptToReloadWindow(event) {
     const shouldReload = event.affectsConfiguration('cypressHelper');
-    if (shouldReload) {
-        const action = 'Reload';
-        vscode
-            .show(
-                'info',
-                `Please reload window in order for changes in extension "Cypress Helper" configuration to take effect.`,
-                false,
-                action
-            )
-            .then((selectedAction) => {
-                if (selectedAction === action) {
-                    vscode.execute('workbench.action.reloadWindow');
-                }
-            });
+
+    if (!shouldReload) {
+        return;
     }
+
+    const action = 'Reload';
+    vscode
+        .show(
+            'info',
+            `Please reload window in order for changes in extension "Cypress Helper" configuration to take effect.`,
+            false,
+            action
+        )
+        .then((selectedAction) => {
+            if (selectedAction === action) {
+                vscode.execute('workbench.action.reloadWindow');
+            }
+        });
 }
 
 module.exports = {

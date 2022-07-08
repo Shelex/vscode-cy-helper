@@ -80,16 +80,16 @@ class FixtureDefinitionProvider {
             document.languageId === 'feature'
                 ? parseFixtureFromGherkinFile(document.fileName, position)
                 : traverseForFixture(document.fileName, position);
-        if (fixtureName) {
-            let filePath = path.join(root, 'cypress', 'fixtures', fixtureName);
-            !path.extname(filePath) && (filePath += '.json');
-            if (fileExist(filePath)) {
-                const targetPosition = vscode.Position(0, 0);
-                return vscode.location(
-                    vscode.parseUri(filePath),
-                    targetPosition
-                );
-            }
+
+        if (!fixtureName) {
+            return;
+        }
+
+        let filePath = path.join(root, 'cypress', 'fixtures', fixtureName);
+        !path.extname(filePath) && (filePath += '.json');
+        if (fileExist(filePath)) {
+            const targetPosition = vscode.Position(0, 0);
+            return vscode.location(vscode.parseUri(filePath), targetPosition);
         }
     }
 }
