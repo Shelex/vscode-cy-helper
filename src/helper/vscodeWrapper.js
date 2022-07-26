@@ -53,10 +53,37 @@ class VS {
         return new this._Location(uri, pos);
     }
 
-    root() {
+    workspaces() {
+        if (
+            !this._workspace.workspaceFolders ||
+            !this._workspace.workspaceFolders.length
+        ) {
+            return [];
+        }
+
         return this._workspace.workspaceFolders
-            ? this._workspace.workspaceFolders[0].uri.fsPath
+            .filter((folder) => folder.uri && folder.uri.fsPath)
+            .map((folder) => folder.uri.fsPath);
+    }
+
+    root(document) {
+        const workspaces = this.workspaces();
+        if (!workspaces.length) {
+            return '';
+        }
+        if (workspaces.length === 1 || !document) {
+            return workspaces.pop();
+        }
+
+        const documentUri = document
+            ? document.fileName || document.fsPath
             : '';
+
+        return (
+            workspaces
+                .filter((workspace) => documentUri.startsWith(workspace))
+                .shift() || ''
+        );
     }
     /**
      *

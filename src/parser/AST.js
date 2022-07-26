@@ -1,7 +1,11 @@
 const Parser = require('@babel/parser');
 const _ = require('lodash');
 const minimatch = require('minimatch');
-const { readFilesFromDir, readFile } = require('../helper/utils');
+const {
+    readFilesFromDir,
+    readFile,
+    readWorkspaces
+} = require('../helper/utils');
 const { CUCUMBER_KEYWORDS, SPACE, regexp } = require('../helper/constants');
 const { parseArguments } = require('./parseArguments');
 
@@ -76,28 +80,33 @@ const customCommandsAvailable = (file) => {
  * @param {string} targetCommand - command for search
  */
 const cypressCommandLocation = (folder, targetCommand) => {
-    const location = readFilesFromDir(folder)
-        .map((path) => {
-            const AST = parseJS(path);
-            if (AST) {
-                const commands = findCypressCommandAddStatements(
-                    AST.program.body
-                );
-                const commandNames = commands.map(
-                    (c) => c.expression.arguments[0].value
-                );
-                if (commandNames.includes(targetCommand)) {
-                    const index = commandNames.indexOf(targetCommand);
-                    const commandBody = commands[index];
-                    return {
-                        file: path,
-                        loc: commandBody.expression.arguments[0].loc.start
-                    };
-                }
-            }
-        })
+    const location = readFilesFromDir({
+        folder: folder
+    })
+        .map((filepath) =>
+            getCypressAddStatementInFile(filepath, targetCommand)
+        )
         .filter(_.identity);
     return location[0] || null;
+};
+
+const getCypressAddStatementInFile = (filepath, targetCommand) => {
+    const AST = parseJS(filepath);
+    if (!AST) {
+        return;
+    }
+    const commands = findCypressCommandAddStatements(AST.program.body);
+    const commandNames = commands.map((c) => c.expression.arguments[0].value);
+
+    if (!commandNames.includes(targetCommand)) {
+        return;
+    }
+    const index = targetCommand ? commandNames.indexOf(targetCommand) : 0;
+    const commandBody = commands[index];
+    return {
+        file: filepath,
+        loc: commandBody.expression.arguments[0].loc.start
+    };
 };
 
 /**
@@ -149,7 +158,7 @@ const typeDefinitions = (
             const argsArray = parseArguments(command.expression.arguments);
             return `${annotation || ''}${commandName}(${argsArray.join(
                 ', '
-            )}): Chainable<any>`;
+            )}): Chainable<any>;`;
         });
         return typeDefBody;
     }).filter(_.identity);
@@ -193,12 +202,13 @@ const findCucumberTypeDefinition = (body) => {
 
 /**
  * Traverse files to find custom types declaration
- * @param {string} path - folder with files
+ * @param {string} folder - folder with files
  */
 
-const findCucumberCustomTypes = (path) => {
+const findCucumberCustomTypes = (folder) => {
     let cucumberTypes = [];
-    readFilesFromDir(path).find((file) => {
+
+    readWorkspaces({ folder }).find((file) => {
         const AST = parseJS(file);
         if (!AST) {
             return;
@@ -224,11 +234,12 @@ const findCucumberCustomTypes = (path) => {
 
 /**
  * Find all step definitions in framework
- * @param {string} stepDefinitionPath - path with root
+ * @param {string} stepDefinitionPath - path to step definitions
  */
 
-const parseStepDefinitions = (stepDefinitionPath) =>
-    _.flatMap(readFilesFromDir(stepDefinitionPath), (file) => {
+const parseStepDefinitions = (folder) => {
+    const workspaceFiles = readWorkspaces({ folder });
+    const stepDefinitionLocations = _.flatMap(workspaceFiles, (file) => {
         const AST = parseJS(file);
         if (!AST) {
             return;
@@ -248,7 +259,10 @@ const parseStepDefinitions = (stepDefinitionPath) =>
                 }
             };
         });
-    }).filter(_.identity);
+    });
+
+    return stepDefinitionLocations.filter(_.identity);
+};
 
 const astLocationInsidePosition = (loc, position) => {
     if (!loc || !position) {
@@ -281,6 +295,7 @@ module.exports = {
     astLocationInsidePosition,
     astExpressionContainsOffset,
     cypressCommandLocation,
+    getCypressAddStatementInFile,
     typeDefinitions,
     parseStepDefinitions,
     findCucumberCustomTypes,

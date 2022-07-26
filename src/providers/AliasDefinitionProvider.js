@@ -10,7 +10,8 @@ const aliasPattern = new RegExp(/\([\"\'](@.*?)[\"\']\)/);
 
 const traverseForAlias = (document) => {
     const currentFolder = path.dirname(document.fileName);
-    const files = readFilesFromDir(currentFolder, {
+    const files = readFilesFromDir({
+        folder: currentFolder,
         extension: `\.[jt]s`
     }).filter((file) => file !== document.fileName);
     const aliases = [];
@@ -19,7 +20,9 @@ const traverseForAlias = (document) => {
     files.unshift(document.getText());
 
     files.forEach((file, index) => {
-        const AST = index === 0 ? parseText(file) : parseJS(file);
+        const isCurrentFile = index === 0;
+
+        const AST = isCurrentFile ? parseText(file) : parseJS(file);
         if (!AST) {
             return;
         }
@@ -33,7 +36,7 @@ const traverseForAlias = (document) => {
                     aliases.push({
                         name: literal.value,
                         loc: literal.loc,
-                        path: file
+                        path: isCurrentFile ? document.fileName : file
                     });
                 }
             }
@@ -45,6 +48,9 @@ const traverseForAlias = (document) => {
 class AliasDefinitionProvider {
     provideDefinition(document, position) {
         const line = document.lineAt(position.line);
+        if (!line.text.includes('@')) {
+            return;
+        }
         const matches = aliasPattern.exec(line.text);
         if (!matches) {
             return;

@@ -1,6 +1,6 @@
 {
     "name": "vscode-cy-helper",
-    "version": "2.5.1",
+    "version": "2.6.0",
     "displayName": "Cypress Helper v2",
     "description": "Extension for cypress.io testing tool",
     "main": "./src/extension",
@@ -330,8 +330,8 @@
         "prettier": "2.7.1"
     },
     "dependencies": {
-        "@babel/parser": "7.18.5",
-        "@babel/traverse": "7.18.5",
+        "@babel/parser": "7.18.9",
+        "@babel/traverse": "7.18.9",
         "axios": "0.27.2",
         "fast-glob": "3.2.11",
         "fs-extra": "10.1.0",

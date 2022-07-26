@@ -1,9 +1,15 @@
 const _ = require('lodash');
 const traverse = require('@babel/traverse');
+const VS = require('../helper/vscodeWrapper');
+const vscode = new VS();
 const { parseText, astExpressionContainsOffset } = require('../parser/AST');
 const { getTasksFromPlugins } = require('./CyTaskDefinitionProvider');
 
-const shouldHaveTaskAutocomplete = (documentContent, offset) => {
+const shouldHaveCommandAutocomplete = (
+    commandName,
+    documentContent,
+    offset
+) => {
     const AST = parseText(documentContent);
 
     if (!AST) {
@@ -18,9 +24,10 @@ const shouldHaveTaskAutocomplete = (documentContent, offset) => {
                 _.get(path, 'node.expression.callee.type') ===
                     'MemberExpression' &&
                 _.get(path, 'node.expression.callee.property.name') ===
-                    'task' &&
+                    commandName &&
                 astExpressionContainsOffset(
-                    _.get(path, 'node.expression.arguments.0'),
+                    _.get(path, 'node.expression.arguments.0') ||
+                        _.get(path, 'node.expression'),
                     offset
                 )
             ) {
@@ -34,7 +41,8 @@ const shouldHaveTaskAutocomplete = (documentContent, offset) => {
 class CyTaskCompletionProvider {
     provideCompletionItems(document, position) {
         if (
-            !shouldHaveTaskAutocomplete(
+            !shouldHaveCommandAutocomplete(
+                'task',
                 document.getText(),
                 document.offsetAt(position)
             )
@@ -42,7 +50,7 @@ class CyTaskCompletionProvider {
             return;
         }
 
-        const taskNames = getTasksFromPlugins()
+        const taskNames = getTasksFromPlugins(vscode.root(document))
             .map((node) =>
                 _.get(node, 'key.type') === 'StringLiteral'
                     ? _.get(node, 'key.value')
@@ -61,4 +69,7 @@ class CyTaskCompletionProvider {
     }
 }
 
-module.exports = CyTaskCompletionProvider;
+module.exports = {
+    CyTaskCompletionProvider,
+    shouldHaveCommandAutocomplete
+};

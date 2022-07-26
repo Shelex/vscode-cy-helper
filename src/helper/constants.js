@@ -61,7 +61,7 @@ module.exports = {
         FIXTURES_CREATED: (items) => `Created new fixtures:\n${toString(items)}`
     },
     regexp: {
-        TS_DEFINITION: /^ +(.*)\(.*: Chainable<any>$/m,
+        TS_DEFINITION: /^ +(.*)\(.*: Chainable<any>;.*?$/m,
         STEP_DEFINITION: /['"`/](.*?)['"`/]/g,
         COMMAND_DECLARATION: /['"`].*?['"`]/g,
         COMMAND_USAGE: /\.(.*?)\(/g,

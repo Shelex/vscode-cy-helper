@@ -2,37 +2,33 @@ const _ = require('lodash');
 const path = require('path');
 const Gherkin = require('gherkin');
 const GherkinParser = new Gherkin.Parser();
-const VS = require('../helper/vscodeWrapper');
-const vscode = new VS();
 const { parseStepDefinitions, findCucumberCustomTypes } = require('./AST');
-const { readFilesFromDir, readFile } = require('../helper/utils');
-const root = vscode.root();
+const { readFile, readWorkspaces } = require('../helper/utils');
 
 /**
  *  Find where cucumber step definitions are stored
  *  by checking package.json for configuration
  */
 const getCucumberStepsPath = () => {
-    const packages = readFilesFromDir(root, {
-        name: 'package',
-        extension: '.json'
+    const packages = readWorkspaces({ name: 'package', extension: '.json' });
+
+    const package = packages.find((package) => {
+        const content = JSON.parse(readFile(package) || '{}');
+        return content['cypress-cucumber-preprocessor'];
     });
 
-    let cucumberConfig;
-    packages.find((p) => {
-        const content = JSON.parse(readFile(p) || '{}');
-        cucumberConfig = _.get(content, 'cypress-cucumber-preprocessor');
-        return cucumberConfig;
-    });
+    if (!package) {
+        return;
+    }
+
+    const cucumberConfig = JSON.parse(readFile(package));
 
     const cucumberPath = _.get(cucumberConfig, 'nonGlobalStepDefinitions')
-        ? 'cypress/integration'
+        ? 'cypress'
         : _.get(cucumberConfig, 'step_definitions') ||
-          'cypress/support/step_definitions';
+          path.join('cypress', 'support', 'step_definitions');
     return path.normalize(cucumberPath);
 };
-
-const stepDefinitionPath = getCucumberStepsPath();
 
 const cucumberTypes = [
     {
@@ -53,19 +49,18 @@ const cucumberTypes = [
     }
 ];
 
-const customTypes = findCucumberCustomTypes(
-    path.normalize(`${root}/${stepDefinitionPath}`)
-);
+const customTypes = () => findCucumberCustomTypes(getCucumberStepsPath());
 
-const allTypes = [...cucumberTypes, ...customTypes];
+const allTypes = () => [...cucumberTypes, ...customTypes()];
 
-const allTypeRegexp = allTypes.map(({ name, pattern }) => {
-    return {
-        name: name,
-        pattern: pattern,
-        replace: new RegExp(`{${name}}`, 'g')
-    };
-});
+const getCucumberTypeMatchers = () =>
+    allTypes().map(({ name, pattern }) => {
+        return {
+            name: name,
+            pattern: pattern,
+            replace: new RegExp(`{${name}}`, 'g')
+        };
+    });
 
 const PARAMETER = '<.*>';
 
@@ -77,10 +72,10 @@ const PATTERN = (type) => {
  * Replace step definition placeholders with types regexp
  * @param {string} literal
  */
-const prepareRegexpForLiteral = (literal) => {
+const prepareRegexpForLiteral = (literal, matchers) => {
     let basicTypesLiteral = `^${literal.replace(/\//g, '|')}$`;
 
-    allTypeRegexp.forEach(({ pattern, replace }) => {
+    matchers.forEach(({ pattern, replace }) => {
         basicTypesLiteral = basicTypesLiteral.replace(
             replace,
             PATTERN(pattern)
@@ -95,7 +90,7 @@ const prepareRegexpForLiteral = (literal) => {
  */
 const parseFeatures = () =>
     _.flatMap(
-        readFilesFromDir(root, {
+        readWorkspaces({
             extension: '.feature'
         }),
         (file) => {
@@ -131,14 +126,17 @@ const parseRegexp = (literal) => {
  * @param {string[]} features - feature files
  * @param {*[]} stepDefinitions - step definitions
  */
-const calculateUsage = (features, stepDefinitions) =>
-    stepDefinitions.map((step) => {
+const calculateUsage = (features, stepDefinitions) => {
+    const cucumberTypeMatchers = getCucumberTypeMatchers();
+    return stepDefinitions.map((step) => {
         const literal = Object.keys(step)[0];
         const { path, loc } = step[literal];
 
         const hasNoTypes = !literal.includes('{') && !literal.includes('}');
         const isStepRegexp = parseRegexp(literal);
-        const literalRegexp = isStepRegexp || prepareRegexpForLiteral(literal);
+        const literalRegexp =
+            isStepRegexp ||
+            prepareRegexpForLiteral(literal, cucumberTypeMatchers);
 
         const usage =
             hasNoTypes && !isStepRegexp
@@ -155,6 +153,7 @@ const calculateUsage = (features, stepDefinitions) =>
             loc: loc
         };
     });
+};
 
 /**
  * -  parse step definitions
@@ -162,15 +161,13 @@ const calculateUsage = (features, stepDefinitions) =>
  * -  compare and return usage array
  */
 const composeUsageReport = () => {
-    const stepDefinitionsParsed = parseStepDefinitions(
-        path.normalize(`${root}/${stepDefinitionPath}`)
-    );
+    const stepDefinitionsParsed = parseStepDefinitions(getCucumberStepsPath());
     const stepsFromFeatures = parseFeatures();
     return calculateUsage(stepsFromFeatures, stepDefinitionsParsed);
 };
 
 module.exports = {
-    stepDefinitionPath,
+    getCucumberStepsPath,
     composeUsageReport,
     parseFeatures,
     calculateUsage

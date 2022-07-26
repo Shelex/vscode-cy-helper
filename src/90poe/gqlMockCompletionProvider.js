@@ -38,8 +38,13 @@ class GQLMockCompletionProvider {
             return;
         }
 
+        const cwd = vscode.root(document);
+        if (!cwd) {
+            return;
+        }
+
         // array of fixtures with absolute (to read operationName from json) and relative paths (labels)
-        const fixtures = findFixtures(vscode.root(), text, context, {
+        const fixtures = findFixtures(cwd, text, context, {
             absolutePath: true
         });
 

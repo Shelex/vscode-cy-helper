@@ -6,9 +6,9 @@ const VS = require('./helper/vscodeWrapper');
 const vscode = new VS();
 const { customCommandsFolder } = vscode.config();
 
-const writeTsConfig = (root) => {
+const writeTsConfig = (cwd) => {
     const cypressRoot = path.join(
-        root,
+        cwd,
         path.normalize(customCommandsFolder.split('cypress')[0]),
         'cypress'
     );
@@ -18,21 +18,21 @@ const writeTsConfig = (root) => {
     vscode.openDocument(tsconfigPath);
 };
 
-const checkTsConfigExist = (path) => {
-    const tsconfig = readFilesFromDir(path, {
+const checkTsConfigExist = (cwd) => {
+    const tsconfig = readFilesFromDir({
         name: 'tsconfig',
-        extension: '.json'
+        extension: '.json',
+        cwd
     });
-    return Boolean(tsconfig.length);
+    return tsconfig.length > 0;
 };
 
-const createDefaultTsConfig = () => {
-    const root = vscode.root();
-    const hasConfig = checkTsConfigExist(root);
+const createDefaultTsConfig = (cwd) => {
+    const hasConfig = checkTsConfigExist(cwd);
     if (hasConfig) {
         vscode.show('err', message.TSCONFIG_EXIST);
     } else {
-        writeTsConfig(root);
+        writeTsConfig(cwd);
     }
 };
 

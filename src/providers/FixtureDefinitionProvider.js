@@ -5,7 +5,6 @@ const VS = require('../helper/vscodeWrapper');
 const vscode = new VS();
 const { parseJS } = require('../parser/AST');
 const { readFile, fileExist } = require('../helper/utils');
-const root = vscode.root();
 const { fixtureAutocompletionCommands } = vscode.config();
 
 const matchInQuotes = new RegExp(/\"(.*?)\"|\'(.*?)\'/);
@@ -85,7 +84,12 @@ class FixtureDefinitionProvider {
             return;
         }
 
-        let filePath = path.join(root, 'cypress', 'fixtures', fixtureName);
+        const cwd = vscode.root(document);
+        if (!cwd) {
+            return;
+        }
+
+        let filePath = path.join(cwd, 'cypress', 'fixtures', fixtureName);
         !path.extname(filePath) && (filePath += '.json');
         if (fileExist(filePath)) {
             const targetPosition = vscode.Position(0, 0);

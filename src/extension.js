@@ -22,7 +22,9 @@ const AliasCompletionProvider = require('./providers/AliasCompletionProvider');
 const {
     AliasDefinitionProvider
 } = require('./providers/AliasDefinitionProvider');
-const CyTaskCompletionProvider = require('./providers/CyTaskCompletionProvider');
+const {
+    CyTaskCompletionProvider
+} = require('./providers/CyTaskCompletionProvider');
 const {
     CyTaskDefinitionProvider
 } = require('./providers/CyTaskDefinitionProvider');
@@ -106,7 +108,8 @@ const activate = (context) => {
         vscode.languages.registerCompletionItemProvider(
             JsAndTsActivationSchema,
             new AliasCompletionProvider(),
-            '@'
+            "'",
+            '"'
         ),
         vscode.languages.registerDefinitionProvider(
             JsAndTsActivationSchema,

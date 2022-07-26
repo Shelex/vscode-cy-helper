@@ -5,7 +5,6 @@ const VS = require('./helper/vscodeWrapper');
 const vscode = new VS();
 const { typeDefinitions, customCommandsAvailable } = require('./parser/AST');
 const { readFilesFromDir } = require('./helper/utils');
-const root = vscode.root();
 const { message, SPACE } = require('./helper/constants');
 const {
     checkTsConfigExist,
@@ -62,14 +61,21 @@ const cleanCommands = (incorrect, available) => {
 };
 
 exports.generateCustomCommandTypes = (doc, onSave = false) => {
-    const folder = path.join(root, path.normalize(customCommandsFolder));
-    const excludes = typeDefinitionExcludePatterns;
-    const typeDefFile = path.join(root, path.normalize(typeDefinitionFile));
+    const cwd = vscode.root(doc);
 
-    const customCommandFiles = readFilesFromDir(folder);
+    if (!cwd) {
+        return;
+    }
+
+    const typeDefFile = path.join(cwd, path.normalize(typeDefinitionFile));
+
+    const customCommandFiles = readFilesFromDir({
+        folder: customCommandsFolder,
+        cwd: cwd
+    });
     let { commandsFound, typeDefs } = typeDefinitions(
         customCommandFiles,
-        excludes,
+        typeDefinitionExcludePatterns,
         { includeAnnotations: includeAnnotationForCommands }
     );
 
@@ -112,7 +118,8 @@ exports.generateCustomCommandTypes = (doc, onSave = false) => {
 
     added.length && vscode.show('info', message.NEW_COMMANDS(added));
     removed.length && vscode.show('info', message.REMOVED_COMMANDS(removed));
-    const hasTsConfig = checkTsConfigExist(root);
+
+    const hasTsConfig = checkTsConfigExist(cwd);
 
     if (hasTsConfig) {
         return;
@@ -128,7 +135,7 @@ exports.generateCustomCommandTypes = (doc, onSave = false) => {
         )
         .then((selectedAction) => {
             if (selectedAction === 'Yes') {
-                writeTsConfig(root);
+                writeTsConfig(cwd);
             }
         });
 };

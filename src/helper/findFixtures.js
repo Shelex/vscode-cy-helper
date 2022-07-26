@@ -3,12 +3,12 @@ const { readFilesFromDir } = require('./utils');
 
 /**
  *
- * @param {string} root - vscode workspace absolute path
+ * @param {string} cwd - vscode workspace absolute path
  * @param {string} text - text to check command which needs autocompletion
  * @param {*} context - autocompletion provider context
  * @param {*} opts - absolutePath option will provide object with absolute and relative path
  */
-const findFixtures = (root, text, context, opts = { absolutePath: false }) => {
+const findFixtures = (cwd, text, context, opts = { absolutePath: false }) => {
     // in case of triggering autocomplete for subfolders - detect last folder from already used
     const firstAutocompletion =
         context.triggerCharacter === '(' || context.triggerCharacter === '"';
@@ -21,9 +21,11 @@ const findFixtures = (root, text, context, opts = { absolutePath: false }) => {
 
     // get fs path for fixtures
     const fixtures =
-        readFilesFromDir(`${root}/**/${baseFolder}`, {
+        readFilesFromDir({
+            folder: `**/${baseFolder}`,
             extension: '',
-            name: ''
+            name: '',
+            cwd
         }) || [];
 
     if (!fixtures) {

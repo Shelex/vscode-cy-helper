@@ -6,7 +6,7 @@ const {
     composeUsageReport,
     parseFeatures,
     calculateUsage,
-    stepDefinitionPath
+    getCucumberStepsPath
 } = require('./parser/Gherkin');
 const { message, regexp } = require('./helper/constants');
 
@@ -14,12 +14,14 @@ const findUnusedCucumberSteps = () => {
     const usages = composeUsageReport();
     const unused = usages.filter((u) => u.matches === 0);
 
+    const cucumberStepsPath = getCucumberStepsPath();
+
     vscode.showQuickPickMenu(unused, {
         mapperFunction: (c) => {
             return {
                 label: c.step,
                 detail: `${c.path
-                    .split(path.normalize(stepDefinitionPath))[1]
+                    .split(path.normalize(cucumberStepsPath))[1]
                     .replace(/\.js|\.ts/, '')}:${c.loc.line}`,
                 data: c
             };

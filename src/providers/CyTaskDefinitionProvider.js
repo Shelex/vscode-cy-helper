@@ -6,8 +6,6 @@ const vscode = new VS();
 const { readFilesFromDir, readFile } = require('../helper/utils');
 const { parseText, astExpressionContainsOffset } = require('../parser/AST');
 
-const root = vscode.root();
-
 const getTaskName = (documentContent, offset) => {
     const AST = parseText(documentContent);
 
@@ -71,10 +69,13 @@ const getCyTaskAstNodes = (fileName) => {
     return tasks;
 };
 
-const getTasksFromPlugins = () => {
-    const pluginsPath = path.join(root, 'cypress', 'plugins');
+const getTasksFromPlugins = (cwd) => {
+    const pluginsPath = path.join('cypress', 'plugins');
 
-    const pluginsFiles = readFilesFromDir(pluginsPath);
+    const pluginsFiles = readFilesFromDir({
+        folder: pluginsPath,
+        cwd: cwd
+    });
 
     if (!pluginsFiles.length) {
         return;
@@ -96,7 +97,12 @@ class CyTaskDefinitionProvider {
             return;
         }
 
-        const taskSource = getTasksFromPlugins().find(
+        const cwd = vscode.root(document);
+        if (!cwd) {
+            return;
+        }
+
+        const taskSource = getTasksFromPlugins(cwd).find(
             (node) =>
                 _.get(node, 'key.value') === taskName ||
                 _.get(node, 'key.name') === taskName

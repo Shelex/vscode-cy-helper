@@ -3,19 +3,23 @@ const VS = require('../helper/vscodeWrapper');
 const vscode = new VS();
 const { cypressCommandLocation } = require('../parser/AST');
 const { customCommandsFolder } = vscode.config();
-const root = vscode.root();
 const { detectCustomCommand } = require('../openCustomCommand');
 
 class CommandDefinitionProvider {
-    provideDefinition() {
+    provideDefinition(document) {
         const { commandName } = detectCustomCommand();
 
         if (!commandName) {
             return;
         }
 
+        const cwd = vscode.root(document);
+        if (!cwd) {
+            return;
+        }
+
         const commandsLocation = path.join(
-            root,
+            cwd,
             path.normalize(customCommandsFolder)
         );
         const location = cypressCommandLocation(commandsLocation, commandName);

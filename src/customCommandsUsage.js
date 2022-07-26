@@ -3,11 +3,14 @@ const _ = require('lodash');
 const VS = require('./helper/vscodeWrapper');
 const vscode = new VS();
 const { typeDefinitions } = require('./parser/AST');
-const { readFilesFromDir, readFile } = require('./helper/utils');
+const {
+    readFile,
+    readWorkspaces,
+    readFilesFromDir
+} = require('./helper/utils');
 const { message, regexp } = require('./helper/constants');
 const { detectCustomCommand } = require('./openCustomCommand');
 const { customCommandsFolder } = vscode.config();
-const root = vscode.root();
 
 const findCustomCommands = (workspaceFiles) => {
     const { commandsFound } = typeDefinitions(workspaceFiles, [], {
@@ -26,7 +29,7 @@ const findCustomCommands = (workspaceFiles) => {
 };
 
 const findUnusedCustomCommands = () => {
-    const workspaceFiles = readFilesFromDir(root);
+    const workspaceFiles = readWorkspaces();
     let uniqueCommands = findCustomCommands(workspaceFiles);
 
     for (const file of workspaceFiles) {
@@ -39,9 +42,10 @@ const findUnusedCustomCommands = () => {
 
     vscode.showQuickPickMenu(uniqueCommands, {
         mapperFunction: (c) => {
-            const fileRelativePath = c.path
-                .replace(root, '')
-                .replace(`${customCommandsFolder}${path.sep}`, '');
+            const fileRelativePath = c.path.replace(
+                `${customCommandsFolder}${path.sep}`,
+                ''
+            );
             return {
                 label: c.name,
                 detail: `${fileRelativePath}:${c.loc.start.line}`,
@@ -57,7 +61,7 @@ const findUnusedCustomCommands = () => {
  * Detect custom command references
  * returns command name and references array
  */
-const customCommandReferences = () => {
+const customCommandReferences = (cwd) => {
     const { commandName: command, err } = detectCustomCommand();
     if (err) {
         vscode.show('err', message.NO_COMMAND_DETECTED(err));
@@ -70,24 +74,25 @@ const customCommandReferences = () => {
 
     const commandName = command.replace(regexp.QUOTES, '');
     const commandPattern = new RegExp(`\\.${commandName}\\(`, 'g');
-    const workspaceFiles = readFilesFromDir(root);
+    const workspaceFiles = readFilesFromDir({ cwd });
 
     const references = _.flatMap(workspaceFiles, (file) => {
         const content = readFile(file) || '';
         return content.split('\n').map((row, index) => {
             const hasCommand = commandPattern.exec(row);
-            if (hasCommand) {
-                const column = row.indexOf(commandName);
-                return {
-                    path: file,
-                    loc: {
-                        start: {
-                            line: index + 1,
-                            column: column
-                        }
-                    }
-                };
+            if (!hasCommand) {
+                return;
             }
+            const column = row.indexOf(commandName);
+            return {
+                path: file,
+                loc: {
+                    start: {
+                        line: index + 1,
+                        column: column
+                    }
+                }
+            };
         });
     }).filter(_.identity);
 
@@ -97,8 +102,12 @@ const customCommandReferences = () => {
     };
 };
 
-const showCustomCommandReferences = () => {
-    const usage = customCommandReferences();
+const showCustomCommandReferences = (document) => {
+    const cwd = vscode.root(document);
+    if (!cwd) {
+        return;
+    }
+    const usage = customCommandReferences(cwd);
 
     if (!usage) {
         vscode.show('err', message.REFERENCE_NOT_FOUND());
@@ -109,7 +118,7 @@ const showCustomCommandReferences = () => {
     vscode.showQuickPickMenu(references, {
         mapperFunction: (c) => {
             return {
-                label: `${c.path.replace(root, '')}:${c.loc.start.line}`,
+                label: `${c.path.replace(cwd, '')}:${c.loc.start.line}`,
                 data: c
             };
         },

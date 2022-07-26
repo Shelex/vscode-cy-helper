@@ -42,7 +42,12 @@ class FixtureCompletionProvider {
             context.triggerCharacter === '(' ||
             context.triggerCharacter === '"';
 
-        const fixtures = findFixtures(vscode.root(), text, context);
+        const cwd = vscode.root(document);
+        if (!cwd) {
+            return;
+        }
+
+        const fixtures = findFixtures(cwd, text, context);
 
         if (!fixtures) {
             return;

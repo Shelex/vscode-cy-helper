@@ -5,7 +5,6 @@ const vscode = new VS();
 const { cypressCommandLocation } = require('./parser/AST');
 const { message, regexp, CYPRESS_COMMAND_ADD } = require('./helper/constants');
 const { customCommandsFolder } = vscode.config();
-const root = vscode.root();
 
 /**
  * check if target index is inside ranges
@@ -114,7 +113,11 @@ const detectCustomCommand = () => {
  *  - find its location
  *  - open document with cursor on command definition
  */
-const openCustomCommand = () => {
+const openCustomCommand = (document) => {
+    const root = vscode.root(document);
+    if (!root) {
+        return;
+    }
     const { commandName, err } = detectCustomCommand();
     if (err) {
         vscode.show('err', message.NO_COMMAND_DETECTED(err));
