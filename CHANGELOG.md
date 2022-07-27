@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - YYYY-MM-DD
 
+## [2.7.0] - 2022-07-27
+### Added
+- automatically detect spec argument for Cypress Open based on cypress version in package.json
+
+## [2.6.0] - 2022-07-26
+### Added
+- support for multiple workspace folders
+
 ## [2.5.1] - 2022-07-08
 ### Fixed
 

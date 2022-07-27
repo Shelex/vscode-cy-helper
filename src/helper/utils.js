@@ -6,15 +6,19 @@ const VS = require('./vscodeWrapper');
 const vscode = new VS();
 
 const cypressExists = (cwd) => {
-    const cypressFolder = glob
-        .sync(`**/cypress`, {
-            onlyDirectories: true,
-            cwd: cwd,
-            suppressErrors: true,
-            absolute: true,
-            ignore: '**/node_modules/**'
-        })
-        .shift();
+    const matches = glob.sync(`**/cypress`, {
+        onlyDirectories: true,
+        cwd: cwd,
+        suppressErrors: true,
+        absolute: true,
+        ignore: '**/node_modules/**'
+    });
+
+    if (!matches.length) {
+        return;
+    }
+
+    const cypressFolder = matches.shift();
 
     if (!cypressFolder) {
         return;

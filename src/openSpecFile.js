@@ -1,7 +1,7 @@
 const path = require('path');
 const VS = require('./helper/vscodeWrapper');
 const vscode = new VS();
-const { fileExist } = require('./helper/utils');
+const { fileExist, readFile, readFilesFromDir } = require('./helper/utils');
 const { getTerminal } = require('./helper/terminal');
 const { commandForOpen, commandForRun } = vscode.config();
 
@@ -34,9 +34,11 @@ exports.openSpecFile = (type, filename) => {
 
     const terminal = getTerminal(root);
     terminal.show();
-    const commandArguments = commandForOpen.includes('--e2e')
-        ? `--config specPattern="${absolutePath}"`
-        : `--config testFiles="${absolutePath}"`;
+    const commandArguments =
+        commandForOpen.includes('--e2e') ||
+        isCypressV10(vscode.root(absolutePath))
+            ? `--config specPattern="${absolutePath}"`
+            : `--config testFiles="${absolutePath}"`;
 
     const exec =
         type === 'run'
@@ -46,4 +48,39 @@ exports.openSpecFile = (type, filename) => {
                   arg: commandArguments
               };
     terminal.sendText(`${exec.command} ${exec.arg}`);
+};
+
+const isCypressV10 = (cwd) => {
+    const packageFiles = readFilesFromDir({
+        cwd,
+        name: 'package',
+        extension: '.json'
+    });
+
+    if (!packageFiles.length) {
+        return;
+    }
+
+    const packageFile = packageFiles.shift();
+
+    if (!packageFile) {
+        return;
+    }
+
+    try {
+        const package = JSON.parse(readFile(packageFile));
+
+        const versionString =
+            package.dependencies.cypress || package.devDependencies.cypress;
+
+        const version = versionString.match(/[\d\.]+/).shift();
+
+        const majorVersion = version.split('.').shift();
+
+        if (majorVersion >= 10) {
+            return true;
+        }
+    } catch (e) {
+        return false;
+    }
 };

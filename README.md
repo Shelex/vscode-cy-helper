@@ -125,7 +125,7 @@ From command palette select command `Cypress: Find not used Cucumber step defini
 -   get `cypressHelper.commandForOpen`;
 -   open terminal with name `CypressOpen`;
 -   send command `%%commandForOpen%% --config testFiles=%%spec%%` to terminal, where `%%spec%%` is opened test file path;
-    (`testFiles` option is deprecated in Cypress 10, pass `--e2e` option to previous command to have `specPattern=%%spec%%` support)
+    (`testFiles` option is deprecated in Cypress 10, if `commandForOpen` contains `--e2e` flag OR your package.json contains cypress v10+ as dependency it will add `specPattern=%%spec%%`, to avoid plugin checking package.json just add an `--e2e` flag)
 -   after terminal `CypressOpen` is closed - deletes from opened test file all `@focus` or `.only` tags;
 
 ![](./assets/openCypress.gif)
