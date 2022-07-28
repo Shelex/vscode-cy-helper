@@ -16,6 +16,9 @@ const removeTags = (terminal) => {
     }
 
     const editor = vscode.activeTextEditor();
+    if (!editor) {
+        return;
+    }
     const fullText = editor.document.getText().split('\n');
 
     const testIndexes = fullText

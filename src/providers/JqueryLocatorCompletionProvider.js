@@ -32,13 +32,15 @@ const fileMatchPatterns = (file) => {
 
 const shouldHaveAutocomplete = (documentContent, position) => {
     const AST = parseText(documentContent);
-    if (!AST) {
-        return;
-    }
     const metrics = {
         insideCyCommand: false,
         insideString: false
     };
+
+    if (!AST) {
+        return metrics;
+    }
+
     traverse.default(AST, {
         enter(path) {
             // should be in string or template literal element and when position is inside location
@@ -74,12 +76,9 @@ class jQueryLocatorCompletionProvider {
             return;
         }
 
-        const { insideCyCommand, insideString } = shouldHaveAutocomplete(
-            document.getText(),
-            position
-        );
+        const shouldBe = shouldHaveAutocomplete(document.getText(), position);
 
-        if (!insideString) {
+        if (!shouldBe || !shouldBe.insideString) {
             return;
         }
 
@@ -89,7 +88,10 @@ class jQueryLocatorCompletionProvider {
          * - current position is not an argument of cyCommand
          */
 
-        if (!fileMatchPatterns(document.fileName) && !insideCyCommand) {
+        if (
+            !fileMatchPatterns(document.fileName) &&
+            !shouldBe.insideCyCommand
+        ) {
             return;
         }
 

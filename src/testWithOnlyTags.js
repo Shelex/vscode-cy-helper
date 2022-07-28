@@ -13,6 +13,10 @@ const {
 const setTag = (kind, scenarioIndex, isCucumber) => {
     const editor = vscode.activeTextEditor();
 
+    if (!editor) {
+        return;
+    }
+
     !scenarioIndex && vscode.show('err', message.NO_TEST);
 
     if (isCucumber) {
@@ -51,6 +55,11 @@ const setTag = (kind, scenarioIndex, isCucumber) => {
 
 const clearTag = (scenarioIndex, isCucumber) => {
     const editor = vscode.activeTextEditor();
+
+    if (!editor) {
+        return;
+    }
+
     const { text, range } = editor.document.lineAt(
         isCucumber ? scenarioIndex - 1 : scenarioIndex
     );

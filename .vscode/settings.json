@@ -1,5 +1,4 @@
 {
-    "eslint.packageManager": "yarn",
     "eslint.lintTask.enable": true,
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true

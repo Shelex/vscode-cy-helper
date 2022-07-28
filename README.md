@@ -11,30 +11,39 @@ Cypress extension for vs code.
 
 ### Custom commands
 
--   [Go to definition](#1-open-cypress-custom-command-definition)
--   [References](#2-find-cypress-custom-commands-references)
--   [Find unused commands](#3-find-not-used-cypress-custom-commands)
--   [Generate type definitions file for custom commands](#4-generate-type-definitions-for-cypress-custom-commands)
-
-### Step definitions (cucumber)
-
--   [References](#5-find-cucumber-step-definition-references)
--   [Find unused steps](#6-find-not-used-cucumber-step-definitions)
+-   [Go to definition](./docs/custom_commands#open-cypress-custom-command-definition)
+-   [References](./docs/custom_commands#find-cypress-custom-commands-references)
+-   [Find unused commands](./docs/custom_commands#find-not-used-cypress-custom-commands)
+-   [Generate type definitions file for custom commands](./docs/custom_commands#generate-type-definitions-for-cypress-custom-commands)
+-   [Create default tsconfig file](./docs/custom_commands#create-default-tsconfig-file)
 
 ### Other
 
--   [Open cypress window](#7-open-cypress-window)
--   [Fixture path autocompletion](#8-fixtures-autocompletion)
--   [Fixture path go to definition](#9-fixtures-definition)
--   [Alias autocompletion](#10-alias-autocompletion)
--   [Alias go to definition](#11-alias-definition)
--   [cy.task autocompletion](#17-cypress-task-autocompletion)
--   [cy.task go to definition](#18-cypress-task-definition)
--   [Cucumber tags autocompletion](#12-cucumber-tag-autocompletion)
--   [Create default tsconfig file](#13-create-default-tsconfig-file)
--   [Keypress events snippets inside cy.type autocompletion](#14-keypress-events-snippets-inside-cy.type-autocompletion)
--   [jQuery locators autocompletion](#15-jquery-locators-autocompletion)
--   [JSON Schema generation](#16-generate-json-schema)
+-   [Open cypress window](./docs/other#open-cypress-window)
+-   [Keypress events snippets inside cy.type autocompletion](./docs/other#keypress-events-snippets-inside-cy.type-autocompletion)
+-   [jQuery locators autocompletion](./docs/other#jquery-locators-autocompletion)
+-   [JSON Schema generation](./docs/other#generate-json-schema)
+
+### Gherkin (cucumber)
+
+-   [References](./docs/gherkin#find-cucumber-step-definition-references)
+-   [Find unused steps](./docs/gherkin#find-not-used-cucumber-step-definitions)
+-   [Tag autocompletion](./docs/gherkin#tag-autocompletion)
+
+### Alias
+
+-   [Alias autocompletion](./docs/alias#alias-autocompletion)
+-   [Alias go to definition](./docs/alias#alias-definition)
+
+### Task
+
+-   [cy.task autocompletion](./docs/tasks#cypress-task-autocompletion)
+-   [cy.task go to definition](./docs/tasks#cypress-task-definition)
+
+### Fixtures
+
+-   [Fixture path autocompletion](./docs/fixtures#fixtures-autocompletion)
+-   [Fixture path go to definition](./docs/fixtures#fixtures-definition)
 
 ## Configuration
 
@@ -56,166 +65,6 @@ Cypress extension for vs code.
 | `cypressHelper.reuseTerminalInstance`               | By default executes `commandForOpen` in same terminal instance. To spawn new instance for each cypress opening set it to `false`                                                                        | true                                                                                                                                                                                                                                                                                                            |
 | `cypressHelper.cypressCodeLensePattern`             | To enable code lenses (Cypress Open, Cypress Run, Set 'only') just for specific glob pattern, useful when project has other types of tests                                                              | all files with `.js`, `.ts`, `.feature` extension inside `cypress` folder                                                                                                                                                                                                                                       |
 
-## Usage
-
-### 1. Open cypress custom command definition
-
-In case you want to be instantly redirected to definition file - click on custom command, and from editor menu select `Cypress: Go to custom command definition`  
-You can use native `Go to Definition` and `Peek Definition` - but usually it offers several results, so you should pick one by yourself.  
-If you are using just native editor menu items - you can disable `Cypress: Go to custom command definition` in configuration `cypressHelper.menuItems` by setting `"GoToCustomCommand": false`  
-How it works:
-
--   Text from current line with cursor is taken, trying to find closest command call in line;
--   Checking files in `cypressHelper.customCommandsFolder` (`cypress/support` by default).
--   In case file with `Cypress.Commands.add(%%detected_command%%)` is found - redirect.
-
-![](./assets/goToCommand.gif)
-
-### 2. Find Cypress custom commands references
-
-From editor menu select `Cypress: Get custom command references` to choose from quick-pick menu or you can use native `Find All References` and `Peek References` to use left-panel tab.  
-You can disable editor `Cypress: Get custom command references` item with configuration `cypressHelper.menuItems` and `"FindCustomCommandReferences": false`.  
-In case you have custom command `.ts` definition file in your workspace - native methods will return duplicated results, so you can turn off extension references provider with configuration `cypressHelper.enableCommandReferenceProvider: false`.
-
-![](./assets/customCommandReference.gif)
-
-### 3. Find unused Cypress custom commands
-
-From command palette (⌘P) select `Cypress: Find not used custom commands`
-
-![](./assets/findUnusedCustomCommands.gif)
-
-### 4. Generate type definitions for Cypress custom commands
-
-Context menu item `Cypress: Generate custom command types` or can also be configured to generate types on save, with `cypressHelper.typeDefinitionOnSave`  
-How it works:
-
--   checks configuration `customCommandsFolder`, `typeDefinitionFile`, `typeDefinitionExcludePatterns`, `includeAnnotationForCommands`
--   get files from `customCommandsFolder`, excepting `typeDefinitionExcludePatterns`
--   in case custom command definitions found - trying to parse argument types, setting `any` by default
--   get `typeDefinitionFile` content to check how much commands changed to display message
--   check for command names duplication (2 commands with same name will cause inappropriate behaviour)
--   write file with type definitions for commands to `typeDefinitionFile`, in case `includeAnnotationForCommands: true` also includes comment above commands. **Please note** that comment should be in [JSDoc](https://code.visualstudio.com/docs/languages/javascript#_jsdoc-support) format (`/**`), in other case only last comment is added.
--   in case workspace has no `tsconfig.json` file, prompt to create it will be shown.
--   show message about duplicates, added and deleted commands.
-
-![](./assets/generateTypes.gif)
-
-### 5. Find Cucumber step definition references
-
-From menu select `Cypress: Get step definition references` to choose from quick-pick menu or you can use native `Find All References` and `Peek References` to use left-panel tab.
-
-![](./assets/stepDefinitionReference.gif)
-
-### 6. Find unused Cucumber step definitions
-
-From command palette select command `Cypress: Find not used Cucumber step definitions`
-
-![](./assets/findUnusedStepDefinitions.gif)
-
-### 7. Open Cypress window
-
--   For opening Cypress with current file - click CodeLens "Open Cypress" (button above test).
-    Please note that it will execute command from `cypressHelper.commandForOpen` configuration.
--   For marking some tests with `only`/`@focus` tag, or removing - click corresponding CodeLens. Also, you can just close terminal `CypressOpen` to remove all `only` tags from your file.
--   In case this functionality is not needed for your case, it could be disabled by setting configuration `cypressHelper.menuItems.OpenCypress` to `false`
-
-#### How it works:
-
--   get `cypressHelper.commandForOpen`;
--   open terminal with name `CypressOpen`;
--   send command `%%commandForOpen%% --config testFiles=%%spec%%` to terminal, where `%%spec%%` is opened test file path;
-    (`testFiles` option is deprecated in Cypress 10, if `commandForOpen` contains `--e2e` flag OR your package.json contains cypress v10+ as dependency it will add `specPattern=%%spec%%`, to avoid plugin checking package.json just add an `--e2e` flag)
--   after terminal `CypressOpen` is closed - deletes from opened test file all `@focus` or `.only` tags;
-
-![](./assets/openCypress.gif)
-
-### 8. Fixtures autocompletion
-
-Typing `cy.fixture(` opens VS Code Completion interface with possible files and subfolders to select needed fixture file  
-To add your own commands that require fixture autocomplete for arguments - check configuration `cypressHelper.fixtureAutocompletionCommands`  
-If you are using cucumber and fixtures as parameters in your scenarios, you can enable autocomplete by setting `cypressHelper.cucumberFixtureAutocompleteOnQuotes: true`  
-Thanks to [Josef Biehler](https://github.com/gabbersepp/cypress-fixture-intellisense) for original fixture autocomplete idea
-
-![](./assets/fixtureCompletion.gif)
-
-### 9. Fixtures definition
-
-Go to definition and Peek definition options for feature files.  
-Works in cucumber feature files in scenario or examples table also.  
-Currently default fixtures path `cypress/fixtures` supported only.
-
-![](./assets/fixtureDefinition.gif)
-
-### 10. Alias autocompletion
-
-Autocompletion for aliases. Aliases will be selected from files in current folder.
-
-![](./assets/aliasCompletion.gif)
-
-### 11. Alias definition
-
-Go to definition and Peek definition options available for aliases.  
-Aliases created in same folder files are supported only.
-
-![](./assets/aliasDefinition.gif)
-
-### 12 Cucumber tags autocompletion
-
-Typing `@` in `.feature` file shows autocompletion with tags from configuration `cypressHelper.cucumberTagsAutocomplete.tags` - with `focus` by default. In case you have [cypress-allure-plugin](https://www.npmjs.com/package/@shelex/cypress-allure-plugin) just set `cypressHelper.cucumberTagsAutocomplete.allurePlugin` and list of allure tags will be available.
-
-![](./assets/cucumberCompletion.gif)
-
-### 13. Create default tsconfig file
-
-From command palette select command `Cypress: Create default tsconfig.json file`
-
-tsconfig could also be created when `Cypress: Generate custom command types` is used.
-
-### 14. Keypress events snippets inside cy.type autocompletion
-
-Inside cy.type string or template literal argument just type `{` which will trigger autocomplete for [keypress event sequences](https://docs.cypress.io/api/commands/type.html#Arguments)
-
-![](./assets/cyTypeAutocomplete.gif)
-
-### 15. jQuery locators autocompletion
-
--   Configuration
-
-    -   enabled - boolean, turn on\off autocompletion, default `true`.
-    -   commandsForAutocompletion - array[string], cypress commands that should have autocompletion inside string\template literal arguments, default `["get", "find", "filter"]`
-    -   includePatterns - array[string], glob patterns for folders where files should have autocompletion inside string\template literal, could be used inside page objects \ locator objects \ file with locator constants, example:`["**/support/locators/**"]` ,default `[]`
-    -   excludePatterns - array[string], glob patterns for folders that should be excluded from having autocompletion inside string\template literal, could be used to narrow down or specify folder matching criteris , example:`["**/support/locators/handler/**"]` ,default `[]`
-    -   customAttributes - array[string], used to add your attributes to list of autocompletions, example:`["data-cy", "test-data"]` ,default `[]`
-
--   Usage
-    -   type `[` - list with attributes
-    -   type `:` - list of jquery pseudo locators
-    -   type `=` - list of matching strategies for attribute values
-    -   type space - list of relative strategies to query elements (children, direct children, siblings, adjacent)
-
-![](./assets/jqueryLocators.gif)
-
-### 16. Generate JSON Schema
-
-Menu item that appears for json files and generates json schema for further validation with libraries like `ajv` or `@cypress/schema-tools`.
-Is enabled by default, to disable set `cypressHelper.menuItems` `SchemaGenerator` to false.
-File will have name of source file + `Schema`, like `example.json` => `exampleSchema.json`, and title with source file name, like `example`.
-
-![](./assets/jsonSchema.gif)
-
-### 17. Cypress task autocompletion
-
-Autocompletion for `cy.task()`.
-
-![](./assets/cyTaskCompletion.gif)
-
-### 18. Cypress task definition
-
-Go to definition and Peek definition options are available for `cy.task()`.
-
-![](./assets/cyTaskDefinition.gif)
-
 ## License
 
-Copyright 2021 Oleksandr Shevtsov. This project is licensed under the Apache 2.0 License.
+Copyright 2022 Oleksandr Shevtsov. This project is licensed under the Apache 2.0 License.

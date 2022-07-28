@@ -27,7 +27,7 @@ const parseArguments = (commandArguments) =>
 /**
  * Parses arguments from arrow function like:
  * Cypress.Commands.Add('command', (arg1, arg2, arg3) => {})
- * @param {*[]} params
+ * @param {*[]} functionParameters
  */
 const parseFnParams = (functionParameters) =>
     functionParameters.map((param) =>

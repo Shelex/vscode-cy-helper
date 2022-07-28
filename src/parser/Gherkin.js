@@ -12,6 +12,10 @@ const { readFile, readWorkspaces } = require('../helper/utils');
 const getCucumberStepsPath = () => {
     const packages = readWorkspaces({ name: 'package', extension: '.json' });
 
+    if (!packages || !packages.length) {
+        return;
+    }
+
     const package = packages.find((package) => {
         const content = JSON.parse(readFile(package) || '{}');
         return content['cypress-cucumber-preprocessor'];
@@ -123,7 +127,7 @@ const parseRegexp = (literal) => {
 
 /**
  * check where step definitions are used
- * @param {string[]} features - feature files
+ * @param {*[]} features - feature files
  * @param {*[]} stepDefinitions - step definitions
  */
 const calculateUsage = (features, stepDefinitions) => {

@@ -1,4 +1,5 @@
 const vscode = require('vscode');
+const { fileCache } = require('./fs/cache');
 const { openSpecFile } = require('./openSpecFile');
 const { setTag, clearTag } = require('./testWithOnlyTags');
 const { openCustomCommand } = require('./openCustomCommand');
@@ -175,11 +176,19 @@ const activate = (context) => {
     vscode.workspace.onDidChangeConfiguration((event) =>
         promptToReloadWindow(event)
     );
-    vscode.workspace.onDidSaveTextDocument((document) =>
-        regenerateTypes(document)
-    );
+    vscode.workspace.onDidSaveTextDocument((document) => {
+        fileCache.onSave(document);
+        regenerateTypes(document);
+    });
+
+    vscode.workspace.onDidRenameFiles((event) => {
+        fileCache.onRename(event);
+    });
+
+    vscode.workspace.onDidDeleteFiles((event) => {
+        fileCache.onDelete(event);
+    });
 };
-exports.activate = activate;
 
 const deactivate = () => {};
 

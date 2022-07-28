@@ -61,7 +61,7 @@ const parseFixtureFromGherkinFile = (file, position) => {
     const matches = isExamples
         ? matchInExamples.exec(line)
         : matchInQuotes.exec(line);
-    if (!matches.length) {
+    if (!matches || !matches.length) {
         return;
     }
     const fixtureName = _.chain(matches)

@@ -4,3 +4,4 @@ node_modules
 sonar-project.properties
 .vscode-test
 test-resources
+dist
