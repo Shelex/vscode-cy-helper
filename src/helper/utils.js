@@ -4,6 +4,7 @@ const _ = require('lodash');
 const glob = require('fast-glob');
 const VS = require('./vscodeWrapper');
 const vscode = new VS();
+const { fileCache } = require('../fs/cache');
 
 const cypressExists = (cwd) => {
     const matches = glob.sync(`**/cypress`, {
@@ -11,7 +12,7 @@ const cypressExists = (cwd) => {
         cwd: cwd,
         suppressErrors: true,
         absolute: true,
-        ignore: '**/node_modules/**'
+        ignore: ['**/node_modules/**']
     });
 
     if (!matches.length) {
@@ -33,7 +34,7 @@ const readWorkspaces = (opts) => {
 
     for (const workspace of vscode.workspaces()) {
         if (!cypressExists(workspace)) {
-            return;
+            return files;
         }
 
         opts = _.defaults(opts, {
@@ -79,7 +80,7 @@ const readFilesFromDir = (opts) => {
             onlyFiles: true,
             absolute: true,
             suppressErrors: true,
-            ignore: '**/node_modules/**',
+            ignore: ['**/node_modules/**'],
             cwd: opts.cwd
         });
         return files.filter((f) => f.includes('.'));
@@ -99,7 +100,19 @@ const fileExist = (filepath) => fs.pathExistsSync(filepath);
  * Read file content
  * @param {string} filepath
  */
-const readFile = (filepath) =>
+const readFile = (filepath) => {
+    const isCached = fileCache.has(filepath);
+
+    const content = isCached ? fileCache.get(filepath) : readFileFs(filepath);
+
+    if (!isCached && content) {
+        fileCache.set(filepath, content);
+    }
+
+    return content;
+};
+
+const readFileFs = (filepath) =>
     (fs.pathExistsSync(path.resolve(filepath)) &&
         fs.readFileSync(path.resolve(filepath), 'utf-8')) ||
     null;
