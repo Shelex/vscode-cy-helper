@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - YYYY-MM-DD
 
+## [3.0.0] - 2022-07-28
+### Added
+ - simple cache for reading files, listen to fs changes instead of reading them again
+ - more early returns for cases when additional work is not needed
+ - publish extension as single bundle instead of multiple files
+
+### Changed
+- moved description with gifs (for commands and other functionality) to separate files to avoid loading multiple gif files.
+- documentation gif images size reduced from 63.9 Mb to 34.6 Mb thus in combination with separating docs to separate pages should improve experience with docs.
+
 ## [2.7.0] - 2022-07-27
 ### Added
 - automatically detect spec argument for Cypress Open based on cypress version in package.json
