@@ -11,39 +11,39 @@ Cypress extension for vs code.
 
 ### Custom commands
 
--   [Go to definition](./docs/custom_commands#open-cypress-custom-command-definition)
--   [References](./docs/custom_commands#find-cypress-custom-commands-references)
--   [Find unused commands](./docs/custom_commands#find-not-used-cypress-custom-commands)
--   [Generate type definitions file for custom commands](./docs/custom_commands#generate-type-definitions-for-cypress-custom-commands)
--   [Create default tsconfig file](./docs/custom_commands#create-default-tsconfig-file)
+-   [Go to definition](./docs/custom_commands.md#open-cypress-custom-command-definition)
+-   [References](./docs/custom_commands.md#find-cypress-custom-commands-references)
+-   [Find unused commands](./docs/custom_commands.md#find-not-used-cypress-custom-commands)
+-   [Generate type definitions file for custom commands](./docs/custom_commands.md#generate-type-definitions-for-cypress-custom-commands)
+-   [Create default tsconfig file](./docs/custom_commands.md#create-default-tsconfig-file)
 
 ### Other
 
--   [Open cypress window](./docs/other#open-cypress-window)
--   [Keypress events snippets inside cy.type autocompletion](./docs/other#keypress-events-snippets-inside-cy.type-autocompletion)
--   [jQuery locators autocompletion](./docs/other#jquery-locators-autocompletion)
--   [JSON Schema generation](./docs/other#generate-json-schema)
+-   [Open cypress window](./docs/other.md#open-cypress-window)
+-   [Keypress events snippets inside cy.type autocompletion](./docs/other.md#keypress-events-snippets-inside-cy.type-autocompletion)
+-   [jQuery locators autocompletion](./docs/other.md#jquery-locators-autocompletion)
+-   [JSON Schema generation](./docs/other.md#generate-json-schema)
 
 ### Gherkin (cucumber)
 
--   [References](./docs/gherkin#find-cucumber-step-definition-references)
--   [Find unused steps](./docs/gherkin#find-not-used-cucumber-step-definitions)
--   [Tag autocompletion](./docs/gherkin#tag-autocompletion)
+-   [References](./docs/gherkin.md#find-cucumber-step-definition-references)
+-   [Find unused steps](./docs/gherkin.md#find-not-used-cucumber-step-definitions)
+-   [Tag autocompletion](./docs/gherkin.md#tag-autocompletion)
 
 ### Alias
 
--   [Alias autocompletion](./docs/alias#alias-autocompletion)
--   [Alias go to definition](./docs/alias#alias-definition)
+-   [Alias autocompletion](./docs/alias.md#alias-autocompletion)
+-   [Alias go to definition](./docs/alias.md#alias-definition)
 
 ### Task
 
--   [cy.task autocompletion](./docs/tasks#cypress-task-autocompletion)
--   [cy.task go to definition](./docs/tasks#cypress-task-definition)
+-   [cy.task autocompletion](./docs/tasks.md#cypress-task-autocompletion)
+-   [cy.task go to definition](./docs/tasks.md#cypress-task-definition)
 
 ### Fixtures
 
--   [Fixture path autocompletion](./docs/fixtures#fixtures-autocompletion)
--   [Fixture path go to definition](./docs/fixtures#fixtures-definition)
+-   [Fixture path autocompletion](./docs/fixtures.md#fixtures-autocompletion)
+-   [Fixture path go to definition](./docs/fixtures.md#fixtures-definition)
 
 ## Configuration
 
