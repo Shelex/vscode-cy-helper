@@ -1,9 +1,9 @@
 {
     "name": "vscode-cy-helper",
-    "version": "2.7.0",
-    "displayName": "Cypress Helper v2",
+    "version": "3.0.0",
+    "displayName": "Cypress Helper (latest)",
     "description": "Extension for cypress.io testing tool",
-    "main": "./src/extension",
+    "main": "./dist/extension",
     "repository": {
         "type": "git",
         "url": "https://github.com/Shelex/vscode-cy-helper.git"
@@ -13,6 +13,11 @@
         "email": "ovr.shevtsov@gmail.com"
     },
     "private": true,
+    "scripts": {
+        "vscode:prepublish": "npm run esbuild-base -- --minify",
+        "esbuild-base": "esbuild ./src/extension.js --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
+        "esbuild": "npm run esbuild-base -- --sourcemap"
+    },
     "icon": "assets/icon.png",
     "engines": {
         "vscode": "^1.68.0"
@@ -324,6 +329,7 @@
         "@types/lodash": "4.14.182",
         "@types/node": "15.0.2",
         "@types/vscode": "1.68.0",
+        "esbuild": "0.14.50",
         "eslint": "7.32.0",
         "eslint-config-prettier": "8.5.0",
         "eslint-plugin-prettier": "4.0.0",

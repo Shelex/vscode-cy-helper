@@ -34,9 +34,9 @@ git commit --signoff
 1. You'll need the following tools:
 
 -   [Git](https://git-scm.com/)
--   [Node.JS](https://nodejs.org/en/), x64, version >= 10.16.0, < 11.0.0
--   [Yarn](https://yarnpkg.com/en/), follow the [installation guide](https://yarnpkg.com/en/docs/install)
--   [Visual Studio Code](https://code.visualstudio.com/), version >= 1.38.0
+-   [Node.JS](https://nodejs.org/en/), version >= 16.14.2
+-   [NPM](https://www.npmjs.com/), version 8.5.0
+-   [Visual Studio Code](https://code.visualstudio.com/), version >= 1.68.0
 -   [VSCode Eslint Extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
 
 2. Fork this repository and clone it by running:
@@ -49,7 +49,7 @@ git clone git@github.com:<yourusername>/vscode-cy-helper.git
 
 ```bash
 cd vscode-cy-helper
-yarn install
+npm install
 ```
 
 #### 2. Test

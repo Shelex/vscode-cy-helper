@@ -1,6 +1,7 @@
 assets/**.gif
+docs
 .gitignore
 **/.eslintrc.json
-.vscode-test
-test
-test-resources
+.vscode
+node_modules
+src
