@@ -215,23 +215,27 @@ class VS {
         });
 
         this.showQuickPick(quickPickList).then((pick) => {
-            if (pick) {
-                const { data } = pick;
-                this.openDocumentAtPosition(
-                    data.path,
-                    _.get(data, 'loc.start') || data.loc
-                );
+            if (!pick) {
+                return;
             }
+            const { data } = pick;
+            this.openDocumentAtPosition(
+                data.path,
+                _.get(data, 'loc.start') || data.loc
+            );
         });
     }
 
     /**
      * Edit document at position
-     * @param {Position} position
+     * @param {vscode.Position} position
      * @param {string} newText
      */
     editDocument(position, newText) {
         const editor = this.activeTextEditor();
+        if (!editor) {
+            return;
+        }
         editor
             .edit((editBuilder) => {
                 _.isArray(position)
@@ -246,7 +250,7 @@ class VS {
     /**
      * replace text in document
      * used in completion providers
-     * @param {Range} range
+     * @param {vscode.Range} range
      * @param {string} newText
      */
     replaceText(range, newText) {
@@ -255,8 +259,8 @@ class VS {
 
     /**
      * Create CodeLens for specified range
-     * @param {Range} range
-     * @param {Command} command
+     * @param {vscode.Range} range
+     * @param {vscode.Command} command
      */
     codeLens(range, command) {
         return new this._CodeLens(range, command);

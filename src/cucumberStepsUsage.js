@@ -16,6 +16,10 @@ const findUnusedCucumberSteps = () => {
 
     const cucumberStepsPath = getCucumberStepsPath();
 
+    if (!cucumberStepsPath) {
+        return;
+    }
+
     vscode.showQuickPickMenu(unused, {
         mapperFunction: (c) => {
             return {
@@ -33,6 +37,11 @@ const findUnusedCucumberSteps = () => {
 
 const cucumberStepReferences = () => {
     const editor = vscode.activeTextEditor();
+
+    if (!editor) {
+        return;
+    }
+
     const { fileName } = editor.document;
 
     const { text: line, range } = editor.document.lineAt(
@@ -46,7 +55,7 @@ const cucumberStepReferences = () => {
         : line.replace('/', '|').match(stepDefinitionPattern);
 
     if (!stepLiteralMatch) {
-        return undefined;
+        return;
     }
 
     const stepLiteral = stepLiteralMatch[0].replace(regexp.QUOTES, '');

@@ -80,9 +80,7 @@ const customCommandsAvailable = (file) => {
  * @param {string} targetCommand - command for search
  */
 const cypressCommandLocation = (folder, targetCommand) => {
-    const location = readFilesFromDir({
-        folder: folder
-    })
+    const location = readFilesFromDir({ folder })
         .map((filepath) =>
             getCypressAddStatementInFile(filepath, targetCommand)
         )
@@ -202,39 +200,42 @@ const findCucumberTypeDefinition = (body) => {
 
 /**
  * Traverse files to find custom types declaration
- * @param {string} folder - folder with files
+ * @param {string | null} folder - folder with files
  */
 
 const findCucumberCustomTypes = (folder) => {
-    let cucumberTypes = [];
+    const files = readWorkspaces({ folder });
 
-    readWorkspaces({ folder }).find((file) => {
-        const AST = parseJS(file);
-        if (!AST) {
-            return;
+    if (!files) {
+        return [];
+    }
+
+    const ASTrees = files
+        .map((file) => parseJS(file))
+        .filter((AST) => AST && AST.program.body);
+
+    const cucumberTypes = ASTrees.map((AST) =>
+        findCucumberTypeDefinition(AST.program.body)
+    ).map((type) => {
+        if (!type.expression) {
+            return {};
         }
-        cucumberTypes = findCucumberTypeDefinition(AST.program.body).map(
-            (type) => {
-                const { properties } = type.expression.arguments[0];
-                const name = properties.find((p) => p.key.name === 'name').value
-                    .value;
-                const regexValue = properties.find(
-                    (p) => p.key.name === 'regexp'
-                ).value.pattern;
-                return {
-                    name: name,
-                    pattern: regexValue
-                };
-            }
-        );
-        return cucumberTypes.length;
+        const { properties } = type.expression.arguments[0];
+        const name = properties.find((p) => p.key.name === 'name').value.value;
+        const regexValue = properties.find((p) => p.key.name === 'regexp').value
+            .pattern;
+        return {
+            name: name,
+            pattern: regexValue
+        };
     });
+
     return cucumberTypes;
 };
 
 /**
  * Find all step definitions in framework
- * @param {string} stepDefinitionPath - path to step definitions
+ * @param {string} folder - path to step definitions
  */
 
 const parseStepDefinitions = (folder) => {

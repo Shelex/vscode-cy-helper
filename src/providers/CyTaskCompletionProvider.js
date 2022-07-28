@@ -50,7 +50,13 @@ class CyTaskCompletionProvider {
             return;
         }
 
-        const taskNames = getTasksFromPlugins(vscode.root(document))
+        const tasks = getTasksFromPlugins(vscode.root(document));
+
+        if (!tasks || !tasks.length) {
+            return;
+        }
+
+        const taskNames = tasks
             .map((node) =>
                 _.get(node, 'key.type') === 'StringLiteral'
                     ? _.get(node, 'key.value')

@@ -102,7 +102,13 @@ class CyTaskDefinitionProvider {
             return;
         }
 
-        const taskSource = getTasksFromPlugins(cwd).find(
+        const tasks = getTasksFromPlugins(cwd);
+
+        if (!tasks || !tasks.length) {
+            return;
+        }
+
+        const taskSource = tasks.find(
             (node) =>
                 _.get(node, 'key.value') === taskName ||
                 _.get(node, 'key.name') === taskName

@@ -42,6 +42,10 @@ const findClosestRange = (indexedMatches, target) => {
 const detectCustomCommand = () => {
     const editor = vscode.activeTextEditor();
 
+    if (!editor) {
+        return {};
+    }
+
     if (editor.selection.start.character === editor.selection.end.character) {
         const { text: line } = editor.document.lineAt(
             editor.selection.active.line
