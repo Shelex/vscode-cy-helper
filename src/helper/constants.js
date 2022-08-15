@@ -15,6 +15,7 @@ module.exports = {
     SKIP_BLOCK: '.skip',
     TERMINAL_NAME: 'CypressOpen',
     SCENARIO: 'Scenario',
+    DESCRIBE: 'describe',
     CYPRESS_COMMAND_ADD: 'Cypress.Commands.add',
     CUCUMBER_KEYWORDS: ['given', 'when', 'then', 'Given', 'When', 'Then'],
     message: {
