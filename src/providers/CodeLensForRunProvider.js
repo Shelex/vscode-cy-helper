@@ -69,7 +69,7 @@ class CodeLensForRunProvider {
                     isDescribeLine &&
                     lenses.push(
                         vscode.codeLens(range, {
-                            title: 'Open Cypress for all specs',
+                            title: 'Open Cypress for ALL specs',
                             tooltip:
                                 'open Cypress for all specs CypressHelper.commandForOpen',
                             command: 'cypressHelper.openSpecFile',
@@ -85,6 +85,17 @@ class CodeLensForRunProvider {
                                 'open test file with command configured in CypressHelper.commandForOpen',
                             command: 'cypressHelper.openSpecFile',
                             arguments: ['open', document.fileName]
+                        })
+                    );
+                menuItems.RunCypress &&
+                    isDescribeLine &&
+                    lenses.push(
+                        vscode.codeLens(range, {
+                            title: 'Run Cypress for ALL specs',
+                            tooltip:
+                                'run test file with command configured in CypressHelper.commandForRun',
+                            command: 'cypressHelper.openSpecFile',
+                            arguments: ['run-for-all', document.fileName]
                         })
                     );
                 menuItems.RunCypress &&
