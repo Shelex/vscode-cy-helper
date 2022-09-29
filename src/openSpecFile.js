@@ -42,7 +42,20 @@ exports.openSpecFile = (type, filename) => {
 
     const exec =
         type === 'run'
-            ? { command: commandForRun, arg: `--spec "${relativePath}"` }
+            ? {
+                  command: commandForRun,
+                  arg: `--spec "${relativePath}"`
+              }
+            : type === 'run-for-all'
+            ? {
+                  command: commandForRun,
+                  arg: ''
+              }
+            : type === 'open-for-all'
+            ? {
+                  command: commandForOpen,
+                  arg: ''
+              }
             : {
                   command: commandForOpen,
                   arg: commandArguments

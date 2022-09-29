@@ -5,7 +5,8 @@ const {
     IT,
     SPECIFY,
     FOCUS_TAG_FORMATTED,
-    SCENARIO
+    SCENARIO,
+    DESCRIBE
 } = require('../helper/constants');
 
 const { menuItems, cypressCodeLensePattern } = vscode.config();
@@ -28,9 +29,12 @@ class CodeLensForRunProvider {
         const defaultTag = cucumberPreprocessorUsed ? '"@focus"' : '".only"';
 
         const isTest = (line) =>
-            [SCENARIO, ...Object.values(IT), ...Object.values(SPECIFY)].some(
-                (block) => line.text.trim().startsWith(block)
-            );
+            [
+                SCENARIO,
+                DESCRIBE,
+                ...Object.values(IT),
+                ...Object.values(SPECIFY)
+            ].some((block) => line.text.trim().startsWith(block));
 
         return texts
             .map((text, index) => ({ text, index }))
@@ -53,6 +57,7 @@ class CodeLensForRunProvider {
                         (block) => text.trim().startsWith(block)
                     );
 
+                const isDescribeLine = text.trim().startsWith(DESCRIBE);
                 const useClearTagLense =
                     cucumberPreprocessorUsed && index > 0
                         ? texts[index - 1]
@@ -61,6 +66,18 @@ class CodeLensForRunProvider {
                         : usedSkipOrOnly(text);
 
                 menuItems.OpenCypress &&
+                    isDescribeLine &&
+                    lenses.push(
+                        vscode.codeLens(range, {
+                            title: 'Open Cypress for ALL specs',
+                            tooltip:
+                                'open Cypress for all specs CypressHelper.commandForOpen',
+                            command: 'cypressHelper.openSpecFile',
+                            arguments: ['open-for-all', document.fileName]
+                        })
+                    );
+                menuItems.OpenCypress &&
+                    !isDescribeLine &&
                     lenses.push(
                         vscode.codeLens(range, {
                             title: 'Open Cypress',
@@ -71,6 +88,18 @@ class CodeLensForRunProvider {
                         })
                     );
                 menuItems.RunCypress &&
+                    isDescribeLine &&
+                    lenses.push(
+                        vscode.codeLens(range, {
+                            title: 'Run Cypress for ALL specs',
+                            tooltip:
+                                'run test file with command configured in CypressHelper.commandForRun',
+                            command: 'cypressHelper.openSpecFile',
+                            arguments: ['run-for-all', document.fileName]
+                        })
+                    );
+                menuItems.RunCypress &&
+                    !isDescribeLine &&
                     lenses.push(
                         vscode.codeLens(range, {
                             title: 'Run Cypress',
@@ -80,7 +109,7 @@ class CodeLensForRunProvider {
                             arguments: ['run', document.fileName]
                         })
                     );
-                if (useClearTagLense) {
+                if (useClearTagLense && !isDescribeLine) {
                     lenses.push(
                         vscode.codeLens(range, {
                             title: `Clear ${tagToClear}`,
@@ -93,6 +122,10 @@ class CodeLensForRunProvider {
                 ['only', 'skip'].forEach((tagKind) => {
                     const isSkip = tagKind === 'skip';
                     const configName = isSkip ? 'ItSkip' : 'ItOnly';
+
+                    if (isDescribeLine) {
+                        return;
+                    }
 
                     if (isSkip && cucumberPreprocessorUsed) {
                         return;
