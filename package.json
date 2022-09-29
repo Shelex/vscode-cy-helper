@@ -20,7 +20,7 @@
     },
     "icon": "assets/icon.png",
     "engines": {
-        "vscode": "^1.68.0"
+        "vscode": "^1.71.0"
     },
     "categories": [
         "Other"
