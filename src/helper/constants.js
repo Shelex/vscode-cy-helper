@@ -14,6 +14,7 @@ module.exports = {
     ONLY_BLOCK: '.only',
     SKIP_BLOCK: '.skip',
     TERMINAL_NAME: 'CypressOpen',
+    FEATURE: 'Feature',
     SCENARIO: 'Scenario',
     DESCRIBE: 'describe',
     CYPRESS_COMMAND_ADD: 'Cypress.Commands.add',

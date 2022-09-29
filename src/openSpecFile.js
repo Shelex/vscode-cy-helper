@@ -40,27 +40,26 @@ exports.openSpecFile = (type, filename) => {
             ? `--config specPattern="${absolutePath}"`
             : `--config testFiles="${absolutePath}"`;
 
-    const exec =
-        type === 'run'
-            ? {
-                  command: commandForRun,
-                  arg: `--spec "${relativePath}"`
-              }
-            : type === 'run-for-all'
-            ? {
-                  command: commandForRun,
-                  arg: ''
-              }
-            : type === 'open-for-all'
-            ? {
-                  command: commandForOpen,
-                  arg: ''
-              }
-            : {
-                  command: commandForOpen,
-                  arg: commandArguments
-              };
-    terminal.sendText(`${exec.command} ${exec.arg}`);
+    const execByType = {
+        run: {
+            command: commandForRun,
+            arg: `--spec "${relativePath}"`
+        },
+        open: {
+            command: commandForOpen,
+            arg: commandArguments
+        },
+        'run-for-all': {
+            command: commandForRun
+        },
+        'open-for-all': {
+            command: commandForOpen
+        }
+    };
+
+    const exec = execByType[type];
+
+    terminal.sendText(`${exec.command} ${exec.arg || ''}`);
 };
 
 const isCypressV10 = (cwd) => {
@@ -83,8 +82,11 @@ const isCypressV10 = (cwd) => {
     try {
         const package = JSON.parse(readFile(packageFile));
 
+        const { dependencies, devDependencies } = package;
+
         const versionString =
-            package.dependencies.cypress || package.devDependencies.cypress;
+            (dependencies && dependencies.cypress) ||
+            (devDependencies && devDependencies.cypress);
 
         const version = versionString.match(/[\d\.]+/).shift();
 

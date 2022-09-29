@@ -6,7 +6,8 @@ const {
     SPECIFY,
     FOCUS_TAG_FORMATTED,
     SCENARIO,
-    DESCRIBE
+    DESCRIBE,
+    FEATURE
 } = require('../helper/constants');
 
 const { menuItems, cypressCodeLensePattern } = vscode.config();
@@ -30,6 +31,7 @@ class CodeLensForRunProvider {
 
         const isTest = (line) =>
             [
+                FEATURE,
                 SCENARIO,
                 DESCRIBE,
                 ...Object.values(IT),
@@ -57,7 +59,10 @@ class CodeLensForRunProvider {
                         (block) => text.trim().startsWith(block)
                     );
 
-                const isDescribeLine = text.trim().startsWith(DESCRIBE);
+                const isSuiteLine =
+                    text.trim().startsWith(DESCRIBE) ||
+                    text.trim().startsWith(FEATURE);
+
                 const useClearTagLense =
                     cucumberPreprocessorUsed && index > 0
                         ? texts[index - 1]
@@ -66,18 +71,18 @@ class CodeLensForRunProvider {
                         : usedSkipOrOnly(text);
 
                 menuItems.OpenCypress &&
-                    isDescribeLine &&
+                    isSuiteLine &&
                     lenses.push(
                         vscode.codeLens(range, {
-                            title: 'Open Cypress for ALL specs',
-                            tooltip:
-                                'open Cypress for all specs CypressHelper.commandForOpen',
+                            title: 'Open Cypress with all specs',
+                            tooltip: 'run CypressHelper.commandForOpen command',
                             command: 'cypressHelper.openSpecFile',
                             arguments: ['open-for-all', document.fileName]
                         })
                     );
+
                 menuItems.OpenCypress &&
-                    !isDescribeLine &&
+                    !isSuiteLine &&
                     lenses.push(
                         vscode.codeLens(range, {
                             title: 'Open Cypress',
@@ -87,19 +92,20 @@ class CodeLensForRunProvider {
                             arguments: ['open', document.fileName]
                         })
                     );
+
                 menuItems.RunCypress &&
-                    isDescribeLine &&
+                    isSuiteLine &&
                     lenses.push(
                         vscode.codeLens(range, {
-                            title: 'Run Cypress for ALL specs',
-                            tooltip:
-                                'run test file with command configured in CypressHelper.commandForRun',
+                            title: 'Run Cypress with all specs',
+                            tooltip: 'run CypressHelper.commandForRun command',
                             command: 'cypressHelper.openSpecFile',
                             arguments: ['run-for-all', document.fileName]
                         })
                     );
+
                 menuItems.RunCypress &&
-                    !isDescribeLine &&
+                    !isSuiteLine &&
                     lenses.push(
                         vscode.codeLens(range, {
                             title: 'Run Cypress',
@@ -109,7 +115,7 @@ class CodeLensForRunProvider {
                             arguments: ['run', document.fileName]
                         })
                     );
-                if (useClearTagLense && !isDescribeLine) {
+                if (useClearTagLense && !isSuiteLine) {
                     lenses.push(
                         vscode.codeLens(range, {
                             title: `Clear ${tagToClear}`,
@@ -119,11 +125,12 @@ class CodeLensForRunProvider {
                         })
                     );
                 }
+
                 ['only', 'skip'].forEach((tagKind) => {
                     const isSkip = tagKind === 'skip';
                     const configName = isSkip ? 'ItSkip' : 'ItOnly';
 
-                    if (isDescribeLine) {
+                    if (isSuiteLine) {
                         return;
                     }
 
