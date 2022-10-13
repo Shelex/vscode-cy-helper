@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - YYYY-MM-DD
 
+## [3.2.0] - 2022-10-13
+### Fixed
+ - type definition on save due to missing command for comparison, address #16
+
+### Changed
+ - updated dependencies
+
+### Removed
+- obsolete gql fixtures autocompletion feature
+
 ## [3.0.0] - 2022-07-28
 ### Added
  - simple cache for reading files, listen to fs changes instead of reading them again

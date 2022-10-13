@@ -1,6 +1,6 @@
 {
     "name": "vscode-cy-helper",
-    "version": "3.1.0",
+    "version": "3.2.0",
     "displayName": "Cypress Helper (latest)",
     "description": "Extension for cypress.io testing tool",
     "main": "./dist/extension",
@@ -20,7 +20,7 @@
     },
     "icon": "assets/icon.png",
     "engines": {
-        "vscode": "^1.71.0"
+        "vscode": "^1.72.0"
     },
     "categories": [
         "Other"
@@ -187,8 +187,7 @@
                         "GoToCustomCommand": true,
                         "FindCustomCommandReferences": true,
                         "FindStepDefinitionReferences": true,
-                        "SchemaGenerator": true,
-                        "mockAutocomplete": false
+                        "SchemaGenerator": true
                     },
                     "description": "display menu items for commands",
                     "items": {
@@ -328,23 +327,23 @@
         "@types/glob": "8.0.0",
         "@types/lodash": "4.14.186",
         "@types/node": "15.0.2",
-        "@types/vscode": "1.71.0",
-        "esbuild": "0.15.9",
+        "@types/vscode": "1.72.0",
+        "esbuild": "0.15.10",
         "eslint": "7.32.0",
         "eslint-config-prettier": "8.5.0",
         "eslint-plugin-prettier": "4.2.1",
         "prettier": "2.7.1"
     },
     "dependencies": {
-        "@babel/parser": "7.19.3",
-        "@babel/traverse": "7.19.3",
-        "axios": "0.27.2",
+        "@babel/parser": "7.19.4",
+        "@babel/traverse": "7.19.4",
+        "axios": "1.1.2",
         "fast-glob": "3.2.12",
         "fs-extra": "10.1.0",
         "genson-js": "0.0.8",
         "gherkin": "5.1.0",
         "lodash": "4.17.21",
         "minimatch": "5.1.0",
-        "string-similarity-js": "^2.1.4"
+        "string-similarity-js": "2.1.4"
     }
 }

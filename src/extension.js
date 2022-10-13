@@ -30,7 +30,6 @@ const {
     CyTaskDefinitionProvider
 } = require('./providers/CyTaskDefinitionProvider');
 const CucumberTagsProvider = require('./providers/CucumberTagsProvider');
-const GQLMockCompletionProvider = require('./90poe/gqlMockCompletionProvider');
 const CommandDefinitionProvider = require('./providers/CommandDefinitionProvider');
 const CommandReferencesProvider = require('./providers/CommandReferencesProvider');
 const StepReferencesProvider = require('./providers/StepReferencesProvider');
@@ -120,13 +119,6 @@ const activate = (context) => {
             GherkinActivationSchema,
             new CucumberTagsProvider(),
             '@'
-        ),
-        vscode.languages.registerCompletionItemProvider(
-            JsAndTsActivationSchema,
-            new GQLMockCompletionProvider(),
-            '(',
-            '/',
-            '\\'
         ),
         vscode.languages.registerCompletionItemProvider(
             JsAndTsActivationSchema,

@@ -96,7 +96,7 @@ const getCypressAddStatementInFile = (filepath, targetCommand) => {
     const commands = findCypressCommandAddStatements(AST.program.body);
     const commandNames = commands.map((c) => c.expression.arguments[0].value);
 
-    if (!commandNames.includes(targetCommand)) {
+    if (targetCommand && !commandNames.includes(targetCommand)) {
         return;
     }
     const index = targetCommand ? commandNames.indexOf(targetCommand) : 0;
