@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - YYYY-MM-DD
 
+## [3.3.0] - 2022-11-08
+### Added
+ - support tsx (typescriptreact) and jsx (javascriptreact) file extensions, address #17
+
 ## [3.2.0] - 2022-10-13
 ### Fixed
  - type definition on save due to missing command for comparison, address #16

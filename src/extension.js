@@ -40,7 +40,9 @@ const JiraAllureCompletionProvider = require('./providers/JiraAllureLinkCompleti
 
 const JsAndTsActivationSchema = [
     { scheme: 'file', language: 'javascript' },
-    { scheme: 'file', language: 'typescript' }
+    { scheme: 'file', language: 'typescript' },
+    { scheme: 'file', language: 'typescriptreact' },
+    { scheme: 'file', language: 'javascriptreact' }
 ];
 
 const GherkinActivationSchema = [{ scheme: 'file', language: 'feature' }];
