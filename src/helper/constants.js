@@ -9,7 +9,7 @@ module.exports = {
     IT: {
         BLOCK: 'it(',
         ONLY: 'it.only(',
-        SKIP: 'specify.skip('
+        SKIP: 'it.skip('
     },
     ONLY_BLOCK: '.only',
     SKIP_BLOCK: '.skip',

@@ -6,7 +6,7 @@ const { parseText, astExpressionContainsOffset } = require('../parser/AST');
 const { getTasksFromPlugins } = require('./CyTaskDefinitionProvider');
 
 const shouldHaveCommandAutocomplete = (
-    commandName,
+    commandNames,
     documentContent,
     offset
 ) => {
@@ -15,7 +15,7 @@ const shouldHaveCommandAutocomplete = (
     if (!AST) {
         return;
     }
-    let insideCyTask = false;
+    let insideCyCommand = false;
 
     traverse.default(AST, {
         enter(path) {
@@ -23,26 +23,29 @@ const shouldHaveCommandAutocomplete = (
             if (
                 _.get(path, 'node.expression.callee.type') ===
                     'MemberExpression' &&
-                _.get(path, 'node.expression.callee.property.name') ===
-                    commandName &&
+                commandNames.some(
+                    (commandName) =>
+                        _.get(path, 'node.expression.callee.property.name') ===
+                        commandName
+                ) &&
                 astExpressionContainsOffset(
                     _.get(path, 'node.expression.arguments.0') ||
                         _.get(path, 'node.expression'),
                     offset
                 )
             ) {
-                insideCyTask = true;
+                insideCyCommand = true;
             }
         }
     });
-    return insideCyTask;
+    return insideCyCommand;
 };
 
 class CyTaskCompletionProvider {
     provideCompletionItems(document, position) {
         if (
             !shouldHaveCommandAutocomplete(
-                'task',
+                ['task'],
                 document.getText(),
                 document.offsetAt(position)
             )

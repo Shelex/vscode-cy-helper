@@ -1,11 +1,13 @@
 const { shouldHaveCommandAutocomplete } = require('./CyTaskCompletionProvider');
 const { traverseForAlias } = require('./AliasDefinitionProvider');
 
+const commandsWithAliasAutocomplete = ['get', 'wait'];
+
 class AliasCompletionProvider {
     provideCompletionItems(document, position) {
         if (
             !shouldHaveCommandAutocomplete(
-                'get',
+                commandsWithAliasAutocomplete,
                 document.getText(),
                 document.offsetAt(position)
             )

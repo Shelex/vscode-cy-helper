@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - YYYY-MM-DD
 
+## [3.3.1] - 2022-11-22
+### Fixed
+ - absent code lense option to clear `.skip` for test, address #18
+ - use alias autocompletion for `cy.wait` command, address #19
+
 ## [3.3.0] - 2022-11-08
 ### Added
  - support tsx (typescriptreact) and jsx (javascriptreact) file extensions, address #17
