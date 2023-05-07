@@ -14,7 +14,8 @@ const { customCommandsFolder } = vscode.config();
 
 const findCustomCommands = (workspaceFiles) => {
     const { commandsFound } = typeDefinitions(workspaceFiles, [], {
-        includeLocationData: true
+        includeLocationData: true,
+        tabSize: vscode.tabConfig('.ts')
     });
     return commandsFound.map((found) => {
         const { path, loc } = commandsFound.find(

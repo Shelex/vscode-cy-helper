@@ -6,7 +6,7 @@ const {
     readFile,
     readWorkspaces
 } = require('../helper/utils');
-const { CUCUMBER_KEYWORDS, SPACE, regexp } = require('../helper/constants');
+const { CUCUMBER_KEYWORDS, regexp } = require('../helper/constants');
 const { parseArguments } = require('./parseArguments');
 
 /**
@@ -114,7 +114,11 @@ const getCypressAddStatementInFile = (filepath, targetCommand) => {
 const typeDefinitions = (
     files,
     excludes,
-    options = { includeLocationData: false, includeAnnotations: false }
+    options = {
+        includeLocationData: false,
+        includeAnnotations: false,
+        tabSize: 4
+    }
 ) => {
     const commandsFound = [];
     const suitableFiles = files.filter((path) =>
@@ -148,8 +152,11 @@ const typeDefinitions = (
                 const comments = commentBlock
                     ? _.get(commentBlock, 'value')
                     : null;
+
+                const space = _.repeat(' ', options.tabSize);
+
                 annotation = comments
-                    ? `/*${comments.split('\n').join(SPACE)}*/${SPACE}`
+                    ? `/*${comments.split('\n').join(space)}*/${space}`
                     : null;
             }
 

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - YYYY-MM-DD
 
+## [3.5.0] - 2023-05-07
+
+### Added
+ - instead of constant 4 tab size check editor config and prettier config
+
 ## [3.4.0] - 2023-05-07
 ### Added
  - skip and only code lenses support for `describe` and `context` keywords, address #20

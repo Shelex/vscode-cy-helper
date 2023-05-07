@@ -116,7 +116,48 @@ class VS {
      * @returns {config}
      */
     config() {
-        return this._workspace.getConfiguration().cypressHelper;
+        return this._workspace.getConfiguration('cypressHelper');
+    }
+
+    tabConfig(fileExtension) {
+        const editorSettings = this._workspace.getConfiguration('editor');
+        const { tabSize } = editorSettings;
+
+        if (_.isUndefined(tabSize)) {
+            return 4;
+        }
+
+        const prettierSettings = this._workspace.getConfiguration('prettier');
+        const { tabWidth } = prettierSettings;
+
+        if (tabSize === tabWidth) {
+            return tabSize;
+        }
+
+        const supportedExtensions = {
+            '.js': 'javascript',
+            '.ts': 'typescript',
+            '.json': 'json',
+            '.feature': 'feature'
+        };
+
+        const ext = supportedExtensions[fileExtension];
+
+        if (!ext || _.isUndefined(tabWidth)) {
+            return tabSize;
+        }
+
+        const formatter = this._workspace.getConfiguration(`[${ext}]`);
+
+        const defaultFormatter =
+            (formatter && formatter['editor.defaultFormatter']) || {};
+
+        const tabs =
+            defaultFormatter && defaultFormatter.includes('prettier')
+                ? tabWidth
+                : tabSize;
+
+        return tabs;
     }
 
     Position(line, characters) {

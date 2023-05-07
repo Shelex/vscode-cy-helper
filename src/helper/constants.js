@@ -94,19 +94,18 @@ module.exports = {
         'tms',
         'link'
     ],
-    SPACE: '\n        ',
-    TSCONFIG_DEFAULT_DATA: `{
-  "compilerOptions": {
-    "allowJs": true,
-    "baseUrl": "../node_modules",
-    "types": [
-      "cypress"
-    ],
-    "noEmit": true
-  },
-  "include": [
-    "**/*.*"
-  ]
+    TSCONFIG_DEFAULT_DATA: (spaceFn) => `{
+${spaceFn}"compilerOptions": {
+${spaceFn}${spaceFn}"allowJs": true,
+${spaceFn}${spaceFn}"baseUrl": "../node_modules",
+${spaceFn}${spaceFn}"types": [
+${spaceFn}${spaceFn}${spaceFn}"cypress"
+${spaceFn}${spaceFn}],
+${spaceFn}${spaceFn}"noEmit": true
+${spaceFn}},
+${spaceFn}"include": [
+${spaceFn}${spaceFn}"**/*.*"
+${spaceFn}]
 }`
 };
 

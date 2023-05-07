@@ -6,14 +6,18 @@ const VS = require('./helper/vscodeWrapper');
 const vscode = new VS();
 const { customCommandsFolder } = vscode.config();
 
-const writeTsConfig = (cwd) => {
+const writeTsConfig = (cwd = vscode.root()) => {
     const cypressRoot = path.join(
         cwd,
         path.normalize(customCommandsFolder.split('cypress')[0]),
         'cypress'
     );
     const tsconfigPath = path.join(cypressRoot, 'tsconfig.json');
-    fs.outputFileSync(tsconfigPath, TSCONFIG_DEFAULT_DATA, 'utf-8');
+    fs.outputFileSync(
+        tsconfigPath,
+        TSCONFIG_DEFAULT_DATA(_.repeat(' ', vscode.tabConfig('.json'))),
+        'utf-8'
+    );
     vscode.show('info', message.TSCONFIG_GENERATED);
     vscode.openDocument(tsconfigPath);
 };

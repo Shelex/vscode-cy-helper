@@ -5,7 +5,7 @@ const VS = require('./helper/vscodeWrapper');
 const vscode = new VS();
 const { typeDefinitions, customCommandsAvailable } = require('./parser/AST');
 const { readFilesFromDir } = require('./helper/utils');
-const { message, SPACE } = require('./helper/constants');
+const { message } = require('./helper/constants');
 const {
     checkTsConfigExist,
     writeTsConfig
@@ -20,11 +20,14 @@ const {
 /**
  * Template for type definition file
  */
-const wrapTemplate = (commands) => `declare namespace Cypress {
-    interface Chainable<Subject> {
-        ${commands.join(SPACE)}
-  }
+const wrapTemplate = (commands) => {
+    const spaces = _.repeat(' ', vscode.tabConfig('.ts'));
+    return `declare namespace Cypress {
+${spaces}interface Chainable<Subject> {
+${spaces}${spaces}${commands.join(`\n${spaces}${spaces}`)}
+${spaces}}
 }`;
+};
 
 /**
  * write gathered type definitions to file
@@ -76,7 +79,10 @@ exports.generateCustomCommandTypes = (doc, onSave = false) => {
     let { commandsFound, typeDefs } = typeDefinitions(
         customCommandFiles,
         typeDefinitionExcludePatterns,
-        { includeAnnotations: includeAnnotationForCommands }
+        {
+            includeAnnotations: includeAnnotationForCommands,
+            tabSize: vscode.tabConfig('.ts')
+        }
     );
 
     const availableTypeDefinitions = customCommandsAvailable(typeDefFile);
