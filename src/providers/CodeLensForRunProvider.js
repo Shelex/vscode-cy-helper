@@ -1,4 +1,4 @@
-const minimatch = require('minimatch');
+const { minimatch } = require('minimatch');
 const VS = require('../helper/vscodeWrapper');
 const vscode = new VS();
 const {
@@ -6,8 +6,11 @@ const {
     SPECIFY,
     FOCUS_TAG_FORMATTED,
     SCENARIO,
+    DESCRIBE_KEYWORD,
+    CONTEXT_KEYWORD,
+    FEATURE,
     DESCRIBE,
-    FEATURE
+    CONTEXT
 } = require('../helper/constants');
 
 const { menuItems, cypressCodeLensePattern } = vscode.config();
@@ -33,7 +36,8 @@ class CodeLensForRunProvider {
             [
                 FEATURE,
                 SCENARIO,
-                DESCRIBE,
+                ...Object.values(DESCRIBE),
+                ...Object.values(CONTEXT),
                 ...Object.values(IT),
                 ...Object.values(SPECIFY)
             ].some((block) => line.text.trim().startsWith(block));
@@ -46,8 +50,8 @@ class CodeLensForRunProvider {
                 const { range } = document.lineAt(index);
 
                 const usedSkip = (text) =>
-                    [IT.SKIP, SPECIFY.SKIP].some((block) =>
-                        text.trim().startsWith(block)
+                    [IT.SKIP, SPECIFY.SKIP, DESCRIBE.SKIP, CONTEXT.SKIP].some(
+                        (block) => text.trim().startsWith(block)
                     );
 
                 const tagToClear = usedSkip(text.trim())
@@ -55,12 +59,13 @@ class CodeLensForRunProvider {
                     : defaultTag;
 
                 const usedSkipOrOnly = (text) =>
-                    [IT.ONLY, IT.SKIP, SPECIFY.ONLY, SPECIFY.SKIP].some(
-                        (block) => text.trim().startsWith(block)
-                    );
+                    [IT, SPECIFY, CONTEXT, DESCRIBE]
+                        .flatMap((entity) => [entity.ONLY, entity.SKIP])
+                        .some((block) => text.trim().startsWith(block));
 
                 const isSuiteLine =
-                    text.trim().startsWith(DESCRIBE) ||
+                    text.trim().startsWith(DESCRIBE_KEYWORD) ||
+                    text.trim().startsWith(CONTEXT_KEYWORD) ||
                     text.trim().startsWith(FEATURE);
 
                 const useClearTagLense =
@@ -115,7 +120,7 @@ class CodeLensForRunProvider {
                             arguments: ['run', document.fileName]
                         })
                     );
-                if (useClearTagLense && !isSuiteLine) {
+                if (useClearTagLense) {
                     lenses.push(
                         vscode.codeLens(range, {
                             title: `Clear ${tagToClear}`,
@@ -129,10 +134,6 @@ class CodeLensForRunProvider {
                 ['only', 'skip'].forEach((tagKind) => {
                     const isSkip = tagKind === 'skip';
                     const configName = isSkip ? 'ItSkip' : 'ItOnly';
-
-                    if (isSuiteLine) {
-                        return;
-                    }
 
                     if (isSkip && cucumberPreprocessorUsed) {
                         return;

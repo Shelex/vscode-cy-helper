@@ -21,16 +21,16 @@ const removeTags = (terminal) => {
     }
     const fullText = editor.document.getText().split('\n');
 
-    const testIndexes = fullText
-        .map((line, index) => {
-            if (
-                line.trim().startsWith(FOCUS_TAG.trim()) ||
-                line.trim().includes(ONLY_BLOCK)
-            ) {
-                return index;
-            }
-        })
-        .filter(_.identity);
+    const lineHasOnlyTag = (line) =>
+        line.trim().startsWith(FOCUS_TAG.trim()) ||
+        line.trim().includes(ONLY_BLOCK);
+
+    const testIndexes = fullText.reduce((indexes, line, index) => {
+        if (lineHasOnlyTag(line)) {
+            indexes.push(index);
+        }
+        return indexes;
+    }, []);
 
     const newTexts = [];
     const testLocation = testIndexes.map((index) => {

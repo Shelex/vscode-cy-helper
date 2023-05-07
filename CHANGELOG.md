@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - YYYY-MM-DD
 
+## [3.4.0] - 2023-05-07
+### Added
+ - skip and only code lenses support for `describe` and `context` keywords, address #20
+
+### Fixed
+ - minimatch import resulting in crash
+
 ## [3.3.2] - 2023-05-07
 ### Fixed
  - "undefined" attached to argument name during generating custom command definitions, address #21

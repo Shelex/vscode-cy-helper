@@ -1,6 +1,16 @@
 module.exports = {
     FOCUS_TAG: '@focus ',
     FOCUS_TAG_FORMATTED: '@focus',
+    DESCRIBE: {
+        BLOCK: 'describe(',
+        ONLY: 'describe.only(',
+        SKIP: 'describe.skip('
+    },
+    CONTEXT: {
+        BLOCK: 'context(',
+        ONLY: 'context.only(',
+        SKIP: 'context.skip('
+    },
     SPECIFY: {
         BLOCK: 'specify(',
         ONLY: 'specify.only(',
@@ -16,7 +26,8 @@ module.exports = {
     TERMINAL_NAME: 'CypressOpen',
     FEATURE: 'Feature',
     SCENARIO: 'Scenario',
-    DESCRIBE: 'describe',
+    DESCRIBE_KEYWORD: 'describe',
+    CONTEXT_KEYWORD: 'context',
     CYPRESS_COMMAND_ADD: 'Cypress.Commands.add',
     CUCUMBER_KEYWORDS: ['given', 'when', 'then', 'Given', 'When', 'Then'],
     message: {

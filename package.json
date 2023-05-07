@@ -1,6 +1,6 @@
 {
     "name": "vscode-cy-helper",
-    "version": "3.3.2",
+    "version": "3.4.0",
     "displayName": "Cypress Helper (latest)",
     "description": "Extension for cypress.io testing tool",
     "main": "./dist/extension",
@@ -184,7 +184,7 @@
                         "OpenCypress": true,
                         "RunCypress": false,
                         "ItOnly": true,
-                        "ItSkip": false,
+                        "ItSkip": true,
                         "GenerateCustomCommandTypes": true,
                         "GoToCustomCommand": true,
                         "FindCustomCommandReferences": true,

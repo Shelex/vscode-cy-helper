@@ -7,7 +7,9 @@ const {
     message,
     IT,
     SPECIFY,
-    SKIP_BLOCK
+    SKIP_BLOCK,
+    DESCRIBE,
+    CONTEXT
 } = require('./helper/constants');
 
 const setTag = (kind, scenarioIndex, isCucumber) => {
@@ -16,8 +18,6 @@ const setTag = (kind, scenarioIndex, isCucumber) => {
     if (!editor) {
         return;
     }
-
-    !scenarioIndex && vscode.show('err', message.NO_TEST);
 
     if (isCucumber) {
         // for gherkin set tag @focus on previous line to execute one test
@@ -34,20 +34,24 @@ const setTag = (kind, scenarioIndex, isCucumber) => {
         // for javascript mocha syntax it.only() is required
         const { text, range } = editor.document.lineAt(scenarioIndex);
 
-        const indexOfSpecify = text.indexOf(SPECIFY.BLOCK);
-
         const testNotFound = [
             ...Object.values(IT),
-            ...Object.values(SPECIFY)
+            ...Object.values(DESCRIBE),
+            ...Object.values(SPECIFY),
+            ...Object.values(CONTEXT)
         ].every((block) => text.indexOf(block) === -1);
 
         testNotFound && vscode.show('err', message.NO_TEST);
 
-        const block = indexOfSpecify === -1 ? IT.BLOCK : SPECIFY.BLOCK;
+        const entity = [SPECIFY, DESCRIBE, IT, CONTEXT].find(
+            (block) => text.indexOf(block.BLOCK) !== -1
+        );
 
         const newText = text.replace(
-            block,
-            `${block.slice(0, -1)}${kind === 'skip' ? SKIP_BLOCK : ONLY_BLOCK}(`
+            entity.BLOCK,
+            `${entity.BLOCK.slice(0, -1)}${
+                kind === 'skip' ? SKIP_BLOCK : ONLY_BLOCK
+            }(`
         );
         vscode.editDocument(range, newText);
     }
