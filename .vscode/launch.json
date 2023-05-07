@@ -10,8 +10,10 @@
             "request": "launch",
             "name": "Launch Extension",
             "preLaunchTask": "build-extension",
-            "runtimeExecutable": "${execPath}",
-            "args": ["--extensionDevelopmentPath=${workspaceFolder}"]
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js"
+            ],
+            "args": ["--extensionDevelopmentPath=${workspaceFolder}"]            
         }
     ]
 }

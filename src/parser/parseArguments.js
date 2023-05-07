@@ -45,7 +45,7 @@ const parseFnParams = (functionParameters) =>
                         ) ||
                         'any';
                     return `${param.name}${
-                        param.optional && '?'
+                        param.optional ? '?' : ''
                     } : ${typeAnnotation}`;
                 }
             )

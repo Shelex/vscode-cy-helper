@@ -4,7 +4,7 @@ const prefixes = {
     '~=': 'Attribute Contains Word. Selects elements that have the specified attribute with a value containing a given word, delimited by spaces.',
     '$=': 'Attribute Ends With. Selects elements that have the specified attribute with a value ending exactly with a given string. The comparison is case sensitive.',
     '=': 'Attribute Equals. Selects elements that have the specified attribute with a value exactly equal to a certain value.',
-    '!=': 'Attribute Not Equal. Select elements that either don’t have the specified attribute, or do have the specified attribute but not with a certain value.',
+    '!=': "Attribute Not Equal. Select elements that either don't have the specified attribute, or do have the specified attribute but not with a certain value.",
     '^=': 'Attribute Starts With. Selects elements that have the specified attribute with a value beginning exactly with a given string.',
     '': 'Has Attribute. Selects elements that have the specified attribute, with any value.'
 };

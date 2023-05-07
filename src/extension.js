@@ -36,7 +36,6 @@ const StepReferencesProvider = require('./providers/StepReferencesProvider');
 const CodeLensForRunProvider = require('./providers/CodeLensForRunProvider');
 const TypeKeypressEventsProvider = require('./providers/TypeKeypressEventsProvider');
 const JqueryLocatorCompletionProvider = require('./providers/JqueryLocatorCompletionProvider');
-const JiraAllureCompletionProvider = require('./providers/JiraAllureLinkCompletionProvider');
 
 const JsAndTsActivationSchema = [
     { scheme: 'file', language: 'javascript' },
@@ -101,11 +100,6 @@ const activate = (context) => {
             '"',
             "'",
             '`'
-        ),
-        vscode.languages.registerCompletionItemProvider(
-            GherkinActivationSchema,
-            new JiraAllureCompletionProvider(),
-            '-'
         ),
         vscode.languages.registerCompletionItemProvider(
             JsAndTsActivationSchema,

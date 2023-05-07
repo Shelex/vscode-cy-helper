@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - YYYY-MM-DD
 
+## [3.3.2] - 2023-05-07
+### Fixed
+ - "undefined" attached to argument name during generating custom command definitions, address #21
+ - extension launch task config for debugging
+
+### Changes
+ - removed "jiraAllureAutocomplete" feature as obsolete
+ - updated dependencies
+
 ## [3.3.1] - 2022-11-22
 ### Fixed
  - absent code lense option to clear `.skip` for test, address #18
