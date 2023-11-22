@@ -150,10 +150,12 @@ class VS {
         const formatter = this._workspace.getConfiguration(`[${ext}]`);
 
         const defaultFormatter =
-            (formatter && formatter['editor.defaultFormatter']) || {};
+            (formatter && formatter['editor.defaultFormatter']) || '';
 
         const tabs =
-            defaultFormatter && defaultFormatter.includes('prettier')
+            defaultFormatter &&
+            typeof defaultFormatter === 'string' &&
+            defaultFormatter.includes('prettier')
                 ? tabWidth
                 : tabSize;
 

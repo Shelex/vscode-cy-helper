@@ -88,7 +88,9 @@ exports.generateCustomCommandTypes = (doc, onSave = false) => {
     const availableTypeDefinitions = customCommandsAvailable(typeDefFile);
 
     let uniqueCommands = _.uniq(commandsFound);
-    const incorrectCommands = uniqueCommands.filter((c) => c.includes('-'));
+    const incorrectCommands = uniqueCommands.filter(
+        (c) => c && c.includes('-')
+    );
 
     if (incorrectCommands.length) {
         vscode.show('err', message.INVALID_SYNTAX(incorrectCommands), true);
