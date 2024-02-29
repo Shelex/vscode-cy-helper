@@ -10,10 +10,16 @@ const aliasPattern = new RegExp(/\([\"\'](@.*?)[\"\']\)/);
 
 const traverseForAlias = (document) => {
     const currentFolder = path.dirname(document.fileName);
-    const files = readFilesFromDir({
-        folder: currentFolder,
-        extension: `\.[jt]s`
-    }).filter((file) => file !== document.fileName);
+
+    const isAliasInCurrentFileOnly =
+        vscode.config().aliasAutocompletionForCurrentFile;
+
+    const files = isAliasInCurrentFileOnly
+        ? []
+        : readFilesFromDir({
+              folder: currentFolder,
+              extension: `\.[jt]s`
+          }).filter((file) => file !== document.fileName);
     const aliases = [];
 
     // add current unsaved file changes to track unsaved aliases also

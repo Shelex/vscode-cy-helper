@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - YYYY-MM-DD
 
+## [3.6.0] - 2024-02-29
+
+### Added
+ - config option to narrow down alias autocompletion for current file only
+
+### Fixed
+ - `cy.task` autocompletion and definition
+
 ## [3.5.0] - 2023-05-07
 
 ### Added

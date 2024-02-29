@@ -69,11 +69,9 @@ const getCyTaskAstNodes = (fileName) => {
     return tasks;
 };
 
-const getTasksFromPlugins = (cwd) => {
-    const pluginsPath = path.join('cypress', 'plugins');
-
+const getRegisteredTasks = (cwd) => {
     const pluginsFiles = readFilesFromDir({
-        folder: pluginsPath,
+        folder: cwd,
         cwd: cwd
     });
 
@@ -102,7 +100,7 @@ class CyTaskDefinitionProvider {
             return;
         }
 
-        const tasks = getTasksFromPlugins(cwd);
+        const tasks = getRegisteredTasks(cwd);
 
         if (!tasks || !tasks.length) {
             return;
@@ -130,5 +128,5 @@ class CyTaskDefinitionProvider {
 
 module.exports = {
     CyTaskDefinitionProvider,
-    getTasksFromPlugins
+    getRegisteredTasks
 };

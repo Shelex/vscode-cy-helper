@@ -3,7 +3,7 @@ const traverse = require('@babel/traverse');
 const VS = require('../helper/vscodeWrapper');
 const vscode = new VS();
 const { parseText, astExpressionContainsOffset } = require('../parser/AST');
-const { getTasksFromPlugins } = require('./CyTaskDefinitionProvider');
+const { getRegisteredTasks } = require('./CyTaskDefinitionProvider');
 
 const shouldHaveCommandAutocomplete = (
     commandNames,
@@ -53,7 +53,7 @@ class CyTaskCompletionProvider {
             return;
         }
 
-        const tasks = getTasksFromPlugins(vscode.root(document));
+        const tasks = getRegisteredTasks(vscode.root(document));
 
         if (!tasks || !tasks.length) {
             return;

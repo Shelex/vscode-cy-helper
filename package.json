@@ -1,6 +1,6 @@
 {
     "name": "vscode-cy-helper",
-    "version": "3.5.1",
+    "version": "3.6.0",
     "displayName": "Cypress Helper (latest)",
     "description": "Extension for cypress.io testing tool",
     "main": "./dist/extension",
@@ -177,6 +177,11 @@
                     "type": "boolean",
                     "default": false,
                     "description": "Generate type definitions for custom commands on save"
+                },
+                "cypressHelper.aliasAutocompletionForCurrentFile": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Search alias for autocomplete and definition in current file only (current folder if false)"
                 },
                 "cypressHelper.menuItems": {
                     "type": "object",

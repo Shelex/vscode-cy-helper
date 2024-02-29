@@ -109,7 +109,8 @@ class VS {
      * @property {array} fixtureAutocompletionCommands
      * @property {object} cucumberTagsAutocomplete
      * @property {boolean} enableCommandReferenceProvider
-     * @property {boolean} cucumberFixtureAutocompleteOnQuotes
+     * @property {boolean} cucumberFixtureAutocompleteOnQuote
+     * @property {boolean} aliasAutocompletionForCurrentFile
      * @property {boolean} reuseTerminalInstance
      * @property {jqueryLocators} jqueryLocators
      * @property {string} cypressCodeLensePattern
