@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - YYYY-MM-DD
 
+## [3.6.1] - 2024-05-03
+### Fixed
+- added more guards for .startsWith method as some weird issue occur reported in issue #26
+
 ## [3.6.0] - 2024-02-29
 
 ### Added

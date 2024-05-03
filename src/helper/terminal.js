@@ -22,8 +22,9 @@ const removeTags = (terminal) => {
     const fullText = editor.document.getText().split('\n');
 
     const lineHasOnlyTag = (line) =>
-        line.trim().startsWith(FOCUS_TAG.trim()) ||
-        line.trim().includes(ONLY_BLOCK);
+        line &&
+        (line.trim().startsWith(FOCUS_TAG.trim()) ||
+            line.trim().includes(ONLY_BLOCK));
 
     const testIndexes = fullText.reduce((indexes, line, index) => {
         if (lineHasOnlyTag(line)) {

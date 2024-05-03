@@ -81,7 +81,10 @@ class VS {
 
         return (
             workspaces
-                .filter((workspace) => documentUri.startsWith(workspace))
+                .filter(
+                    (workspace) =>
+                        documentUri && documentUri.startsWith(workspace)
+                )
                 .shift() || ''
         );
     }

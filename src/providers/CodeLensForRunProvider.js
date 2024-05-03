@@ -32,15 +32,22 @@ class CodeLensForRunProvider {
 
         const defaultTag = cucumberPreprocessorUsed ? '"@focus"' : '".only"';
 
-        const isTest = (line) =>
-            [
+        const isTest = (line) => {
+            const text = line && line.text && line.text.trim();
+
+            if (!text) {
+                return false;
+            }
+
+            return [
                 FEATURE,
                 SCENARIO,
                 ...Object.values(DESCRIBE),
                 ...Object.values(CONTEXT),
                 ...Object.values(IT),
                 ...Object.values(SPECIFY)
-            ].some((block) => line.text.trim().startsWith(block));
+            ].some((block) => text.startsWith(block));
+        };
 
         return texts
             .map((text, index) => ({ text, index }))
@@ -50,6 +57,7 @@ class CodeLensForRunProvider {
                 const { range } = document.lineAt(index);
 
                 const usedSkip = (text) =>
+                    text &&
                     [IT.SKIP, SPECIFY.SKIP, DESCRIBE.SKIP, CONTEXT.SKIP].some(
                         (block) => text.trim().startsWith(block)
                     );
@@ -59,17 +67,19 @@ class CodeLensForRunProvider {
                     : defaultTag;
 
                 const usedSkipOrOnly = (text) =>
+                    text &&
                     [IT, SPECIFY, CONTEXT, DESCRIBE]
                         .flatMap((entity) => [entity.ONLY, entity.SKIP])
                         .some((block) => text.trim().startsWith(block));
 
                 const isSuiteLine =
-                    text.trim().startsWith(DESCRIBE_KEYWORD) ||
-                    text.trim().startsWith(CONTEXT_KEYWORD) ||
-                    text.trim().startsWith(FEATURE);
+                    text &&
+                    (text.trim().startsWith(DESCRIBE_KEYWORD) ||
+                        text.trim().startsWith(CONTEXT_KEYWORD) ||
+                        text.trim().startsWith(FEATURE));
 
                 const useClearTagLense =
-                    cucumberPreprocessorUsed && index > 0
+                    cucumberPreprocessorUsed && index > 0 && texts[index - 1]
                         ? texts[index - 1]
                               .trim()
                               .startsWith(FOCUS_TAG_FORMATTED)

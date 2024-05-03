@@ -114,7 +114,7 @@ const parseFeatures = () =>
  * @param {string} literal
  */
 const parseRegexp = (literal) => {
-    if (literal.startsWith('/') && literal.endsWith('/')) {
+    if (literal && literal.startsWith('/') && literal.endsWith('/')) {
         const pureString = literal.replace(/\//g, '');
         try {
             return new RegExp(pureString);
